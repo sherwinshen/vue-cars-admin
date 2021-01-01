@@ -227,4 +227,4 @@ Vue.component("MyComponent", MyComponent); // 全局自定义组件
 
 ## 第19课时
 
-略。
+完成后台管理系统登录/注册功能，注意跨域访问、请求拦截器、路由守卫、验证码流程等相关内容可详见[vue3.0后台管理系统项目实战](https://github.com/MrEnvision/vue-admin)，本项目仅简单实现。

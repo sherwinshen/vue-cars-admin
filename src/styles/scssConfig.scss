@@ -1,0 +1,7 @@
+@mixin webkit($type, $value) {
+  -webkit-#{$type}: $value;
+  -moz-#{$type}: $value;
+  -o-#{$type}: $value;
+  -ms-#{$type}: $value;
+  #{$type}: $value;
+}
