@@ -76,9 +76,8 @@
 </template>
 
 <script>
-import { GetCode, Login, Register } from "@/api/login";
-import { emailRule } from "@/utils/validate";
-import { setToken, setUsername } from "@/utils/cookies";
+import { GetCode, Register } from "@/api/login";
+import { emailRule, passwordRule, codeRule } from "@/utils/validate";
 import sha1 from "js-sha1";
 
 export default {
@@ -99,6 +98,68 @@ export default {
       codeButton: {
         text: "获取验证码",
         disabled: false
+      },
+      rules: {
+        email: [
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                return callback(new Error("邮箱不能为空"));
+              } else if (emailRule(value)) {
+                return callback(new Error("邮箱格式有误"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        password: [
+          {
+            validator: (rule, value, callback) => {
+              if (value === "") {
+                callback(new Error("请输入密码"));
+              } else if (passwordRule(value)) {
+                return callback(new Error("密码为6至20位的数字和字母"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        passwordRepeat: [
+          {
+            validator: (rule, value, callback) => {
+              // 如果模块值为login, 直接通过
+              if (this.isLogin) {
+                callback();
+              }
+              if (value === "") {
+                callback(new Error("请再次输入密码"));
+              } else if (value !== this.form.password) {
+                callback(new Error("与密码不一致"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        code: [
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                return callback(new Error("请输入验证码"));
+              } else if (codeRule(value)) {
+                return callback(new Error("验证码为6位的数字或字母"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ]
       }
     };
   },
@@ -201,13 +262,11 @@ export default {
         password: sha1(this.form.password),
         code: this.form.code
       };
-      Login(requestData)
-        .then(response => {
-          let data = response.data.data;
-          setToken(data.token);
-          setUsername(data.username);
+      this.$store
+        .dispatch("login/login", requestData)
+        .then(() => {
           // 页面跳转
-          this.$router.push({ name: "Home" });
+          this.$router.push({ name: "Console" });
         })
         .catch(() => {
           console.log("登录失败");
@@ -251,7 +310,7 @@ export default {
   left: 50%;
   top: 100px;
   text-align: center;
-  @include webkit(transform, translateX(-50%) );
+  @include webkit(transform, translateX(-50%));
 }
 
 .form-title {

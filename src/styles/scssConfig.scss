@@ -1,3 +1,6 @@
+$color-main: #344a5f;
+$color-second: #f56c6c;
+
 @mixin webkit($type, $value) {
   -webkit-#{$type}: $value;
   -moz-#{$type}: $value;
