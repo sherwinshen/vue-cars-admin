@@ -49,8 +49,8 @@ export default {
 }
 
 .el-main {
-  height: calc(100vh - 80px);
-  margin: 20px 20px 0 20px;
+  height: calc(100vh - 100px);
+  margin: 20px;
   background-color: white;
 }
 
