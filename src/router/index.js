@@ -48,7 +48,7 @@ const routes = [
         path: "/parkingList",
         name: "ParkingList",
         meta: {
-          title: "列表管理"
+          title: "停车场列表"
         },
         component: () => import("../views/Parking")
       },
@@ -62,12 +62,12 @@ const routes = [
       }
     ]
   },
-  // 车辆品牌
+  // 品牌管理
   {
     path: "/brand",
     name: "Brand",
     meta: {
-      title: "车辆品牌"
+      title: "品牌管理"
     },
     component: Layout,
     children: [

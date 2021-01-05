@@ -227,4 +227,59 @@ Vue.component("MyComponent", MyComponent); // 全局自定义组件
 
 ## 第19课时
 
-完成后台管理系统登录/注册功能，注意跨域访问、请求拦截器、路由守卫、验证码流程等相关内容可详见[vue3.0后台管理系统项目实战](https://github.com/MrEnvision/vue-admin)，本项目仅简单实现。
+> 完成后台管理系统登录/注册功能，注意跨域访问、请求拦截器、路由守卫、验证码流程等相关内容可详见[vue3.0后台管理系统项目实战](https://github.com/MrEnvision/vue-admin)，本项目仅简单实现。
+
+略。
+
+## 第20课时
+
+### 20.1 修饰符sync
+
+父组件向子组件传数据的时候，这是一个单向数据流，当我们在子组件中想要修改通过props绑定的父组件里的数据时，Vue不支持我们直接在子组件中进行修改，子组件没有修改父组件数据的权力，其中一种方法就是通过修饰符`.sync`
+
+```vue
+// 父组件
+<template>
+	<!-- 完整写法 <Child :number="total" @update:number="total = $event"/> -->
+	<Child :number.sync="total"></Child>
+</template>
+<script>
+  import Child from 'components/Child.vue'
+  export default {
+    name: 'Parent',
+    components: {
+      Child
+    }
+    data() {
+      return {
+        total: 1000
+      }
+    }
+  }
+</script>
+```
+
+```vue
+// 子组件
+<template>
+	{{number}}
+	<button @click="change" >change</button>
+</template>
+<script>
+  export default {
+    name: 'Child',
+    props: {
+      number: {
+        type: Number,
+        default: 0
+      }
+    },
+    methods:{
+      change() {
+        this.$emit('update:number',this.number + 1)
+      }
+    }
+  }
+</script>
+```
+
