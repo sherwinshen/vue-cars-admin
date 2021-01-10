@@ -14,6 +14,7 @@
     "element-ui": "^2.14.1",
     "js-sha1": "^0.6.0",
     "vue": "^2.6.11",
+    "vue-amap": "^0.5.10",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0",
     "wangeditor": "^4.6.1"

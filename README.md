@@ -358,3 +358,50 @@ export default {
 </style>
 ```
 
+## 第22课时
+
+### 22.1 JSON配置写法
+
+传统的一些写法就是根据`if`来不断判断条件进行设置：
+
+```js
+// 省
+if (level === 0) {
+  requestData.type = "province";
+}
+// 市
+if (level === 1) {
+  requestData.type = "city";
+  requestData.province_code = node.value;
+}
+// 区
+if (level === 2) {
+  requestData.type = "area";
+  requestData.city_code = node.value;
+}
+```
+
+我们其实可以根据JSON配置来简化上述代码，这样更加利于配置：
+
+```js
+const config = {
+  0: {
+    type: "province"
+  },
+  1: {
+    type: "city",
+    code: "province"
+  },
+  2: {
+    type: "area",
+    code: "city"
+  }
+};
+requestData.type = config[level].type;
+if (config[level].code) {
+  requestData[`${config[level].code}_code`] = node.value;
+}
+```
+
+这个方法很实用，也很方便，要掌握哦！！！
+
