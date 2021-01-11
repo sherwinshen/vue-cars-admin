@@ -27,7 +27,7 @@
       </el-form-item>
       <el-form-item label="位置">
         <div class="map">
-          <Map />
+          <Map @lnglat="updateLngLat" />
         </div>
       </el-form-item>
       <el-form-item label="经纬度" prop="desc">
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import Map from "@/components/common/Map";
+import Map from "@/components/Map";
 import CityArea from "@/components/common/CityArea";
 
 export default {
@@ -67,6 +67,9 @@ export default {
   methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    updateLngLat(value) {
+      this.form.desc = value.value;
     }
   }
 };

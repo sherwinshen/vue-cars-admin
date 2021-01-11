@@ -18,7 +18,7 @@
 
 ### 12.1 高德地图组件
 
->[vue-amap](https://elemefe.github.io/vue-amap)是基于 Vue 2.x 与[高德地图](https://lbs.amap.com/api/javascript-api/example/map/click-to-get-lnglat)的组件。
+>[vue-amap](https://elemefe.github.io/vue-amap)是基于 Vue 2.x 与[高德地图](https://lbs.amap.com/api/javascript-api/example)的组件。
 
 ```shell
 npm install vue-amap --save
@@ -404,4 +404,8 @@ if (config[level].code) {
 ```
 
 这个方法很实用，也很方便，要掌握哦！！！
+
+## 第23课时
+
+略。
 
