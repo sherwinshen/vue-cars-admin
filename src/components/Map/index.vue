@@ -6,8 +6,12 @@
 
 <script>
 import { lazyAMapApiLoaderInstance } from "vue-amap";
-import { getLngLat } from "@/components/Map/common";
-import { addressSetMapCenter } from "@/components/Map/common";
+import {
+  amapGetLngLat,
+  amapAddressSetMapCenter,
+  amapSetMarker,
+  amapClearMarker
+} from "@/components/Map/map";
 
 export default {
   name: "Map",
@@ -26,13 +30,21 @@ export default {
         zoom: this.zoom
       });
       this.map.on("click", e => {
-        this.$emit("lnglat", getLngLat(e)); // 子组件调父组件的方法
+        const lnglat = amapGetLngLat(e);
+        this.$emit("lnglat", lnglat); // 子组件调父组件的方法
+        this.setMarker(lnglat);
       });
     });
   },
   methods: {
     setMapCenter(value) {
-      addressSetMapCenter(value, this.map);
+      amapAddressSetMapCenter(value, this.map);
+    },
+    setMarker(value) {
+      amapSetMarker(value, this.map);
+    },
+    clearMarker() {
+      amapClearMarker(this.map);
     }
   }
 };

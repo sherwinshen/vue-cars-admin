@@ -1,5 +1,10 @@
 <template>
-  <el-cascader :props="options" @change="changeData"></el-cascader>
+  <el-cascader
+    ref="cascade"
+    v-model="value"
+    :props="options"
+    @change="changeData"
+  ></el-cascader>
 </template>
 
 <script>
@@ -22,6 +27,7 @@ export default {
     return {
       address: [],
       addressData: {},
+      value: "",
       options: {
         lazy: true,
         lazyLoad(node, resolve) {
@@ -90,6 +96,9 @@ export default {
           }
         });
       }
+    },
+    clear() {
+      this.$refs["cascade"].handleClear();
     }
   }
 };
