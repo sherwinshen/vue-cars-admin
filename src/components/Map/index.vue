@@ -7,6 +7,7 @@
 <script>
 import { lazyAMapApiLoaderInstance } from "vue-amap";
 import { getLngLat } from "@/components/Map/common";
+import { addressSetMapCenter } from "@/components/Map/common";
 
 export default {
   name: "Map",
@@ -28,6 +29,11 @@ export default {
         this.$emit("lnglat", getLngLat(e)); // 子组件调父组件的方法
       });
     });
+  },
+  methods: {
+    setMapCenter(value) {
+      addressSetMapCenter(value, this.map);
+    }
   }
 };
 </script>

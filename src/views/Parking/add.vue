@@ -5,7 +5,11 @@
         <el-input v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item label="区域" prop="area">
-        <CityArea :cityAreaValue.sync="form.area" />
+        <CityArea
+          :cityAreaValue.sync="form.area"
+          :mapInteraction="true"
+          @callback="callback"
+        />
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="form.type">
@@ -27,7 +31,7 @@
       </el-form-item>
       <el-form-item label="位置">
         <div class="map">
-          <Map @lnglat="updateLngLat" />
+          <Map ref="amap" @lnglat="updateLngLat" />
         </div>
       </el-form-item>
       <el-form-item label="经纬度" prop="desc">
@@ -65,11 +69,19 @@ export default {
     };
   },
   methods: {
+    callback(params) {
+      if (params.funcName) {
+        this[params.funcName](params.data);
+      }
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
     updateLngLat(value) {
       this.form.desc = value.value;
+    },
+    setMapCenter(value) {
+      this.$refs.amap.setMapCenter(value.address);
     }
   }
 };

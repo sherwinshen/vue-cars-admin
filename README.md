@@ -285,7 +285,11 @@ Vue.component("MyComponent", MyComponent); // 全局自定义组件
 
 ## 第21课时
 
-### 21.1 富文本编辑器
+略。
+
+## 第22课时
+
+### 22.1 富文本编辑器
 
 ```
 npm i wangeditor --save
@@ -358,9 +362,13 @@ export default {
 </style>
 ```
 
-## 第22课时
+## 第23课时
 
-### 22.1 JSON配置写法
+略。
+
+## 第24课时
+
+### 24.1 JSON配置写法
 
 传统的一些写法就是根据`if`来不断判断条件进行设置：
 
@@ -405,7 +413,41 @@ if (config[level].code) {
 
 这个方法很实用，也很方便，要掌握哦！！！
 
-## 第23课时
+## 第25课时
 
-略。
+### 25.1 组件回调小技巧
+
+如下所示，组件回调的常规做法设置一堆对应的函数来进行调用。
+
+```vue
+<template>
+	<myComponent @a="functionA" @b="functionB" @c="functionC"></myComponent>
+</template>
+```
+
+其实可以做一个简化的操作，通过返回一个JSON包括函数名和执行参数来处理
+
+```vue
+<template>
+	<myComponent @callback="callback"></myComponent>
+</template>
+<script>
+  export default {
+    methods: {
+      callback(params) {
+        if (params.funcName) {
+        	this[params.funcName](params.data)
+      	}
+      }
+    }
+  }
+</script>
+```
+
+```js
+this.$emit("callback", {
+	funcName: a,
+	data: {}
+})
+```
 

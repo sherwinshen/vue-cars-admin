@@ -11,10 +11,17 @@ export default {
     cityAreaValue: {
       type: String,
       default: ""
+    },
+    mapInteraction: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
+    const _this = this;
     return {
+      address: [],
+      addressData: {},
       options: {
         lazy: true,
         lazyLoad(node, resolve) {
@@ -45,12 +52,16 @@ export default {
                 item.label = item[`${config[level].type.toUpperCase()}_NAME`];
                 item.leaf = level >= 2;
               });
+              _this.addressData[config[level].type] = data;
               // 返回节点数据
               resolve(data);
             })
             .catch(error => {
               console.log("error", error);
             });
+          if (node.level !== 0) {
+            _this.getAddress(node);
+          }
         }
       }
     };
@@ -58,6 +69,27 @@ export default {
   methods: {
     changeData(values) {
       this.$emit("update:cityAreaValue", values.join());
+      // 匹配最后区县项
+      const lastCode = values[values.length - 1];
+      const area = this.addressData.area.filter(
+        item => item.value === lastCode
+      )[0];
+      this.address[2] = area.label;
+      this.getAddress();
+    },
+    getAddress(node) {
+      if (node) {
+        this.address[node.level - 1] = node.label;
+      }
+      // 为 true 时，执行地图交互
+      if (this.mapInteraction) {
+        this.$emit("callback", {
+          funcName: "setMapCenter",
+          data: {
+            address: this.address.join("")
+          }
+        });
+      }
     }
   }
 };
