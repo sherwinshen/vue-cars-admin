@@ -8,3 +8,23 @@
 .pull-right {
   float: right;
 }
+
+.width-100 {
+  width: 100px;
+}
+
+.width-140 {
+  width: 140px;
+}
+
+.clear-fix {
+  @extend %clearfix;
+}
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}

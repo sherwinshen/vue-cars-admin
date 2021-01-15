@@ -8,3 +8,17 @@ $color-second: #f56c6c;
   -ms-#{$type}: $value;
   #{$type}: $value;
 }
+
+/* 清除浮动 */
+%clearfix {
+  &:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    line-height: 0;
+    overflow: hidden;
+  }
+
+  *height: 1%;
+}

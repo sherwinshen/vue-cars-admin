@@ -37,6 +37,11 @@ export default {
       defaultActive: ""
     };
   },
+  watch: {
+    $route(to) {
+      this.defaultActive = to.path;
+    }
+  },
   beforeMount() {
     this.routers = this.$router.options.routes;
     this.defaultActive = this.$route.path;

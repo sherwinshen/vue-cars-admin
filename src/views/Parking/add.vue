@@ -19,7 +19,10 @@
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="form.type">
-          <el-radio v-for="item in type" :label="item.value" :key="item.value"
+          <el-radio
+            v-for="item in parking_type"
+            :label="item.value"
+            :key="item.value"
             >{{ item.label }}
           </el-radio>
         </el-radio-group>
@@ -29,7 +32,10 @@
       </el-form-item>
       <el-form-item label="禁启用" prop="status">
         <el-radio-group v-model="form.status">
-          <el-radio v-for="item in status" :label="item.value" :key="item.value"
+          <el-radio
+            v-for="item in parking_status"
+            :label="item.value"
+            :key="item.value"
             >{{ item.label }}
           </el-radio>
         </el-radio-group>
@@ -66,14 +72,8 @@ export default {
   data() {
     return {
       button_loading: false,
-      status: [
-        { label: "禁用", value: 1 },
-        { label: "启用", value: 2 }
-      ],
-      type: [
-        { label: "室内", value: 1 },
-        { label: "室外", value: 2 }
-      ],
+      parking_status: this.$store.state.config.parking_status,
+      parking_type: this.$store.state.config.parking_type,
       form: {
         parkingName: "",
         area: "",
