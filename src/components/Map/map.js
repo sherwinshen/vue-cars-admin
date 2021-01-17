@@ -38,6 +38,7 @@ export function amapSetMarker(lnglat, map) {
     offset: new AMap.Pixel(-13, -30)
   });
   map.add(marker);
+  map.setFitView();
 }
 
 // 清除覆盖物

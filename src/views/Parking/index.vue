@@ -1,7 +1,7 @@
 <template>
   <div class="parking-list-wrap">
     <el-row>
-      <el-col :span="21">
+      <el-col :span="22">
         <el-form
           :inline="true"
           :model="filterForm"
@@ -34,15 +34,22 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="名称">
-            <el-input v-model="filterForm.name" class="width-140"></el-input>
+          <el-form-item label="关键词" prop="status">
+            <el-select v-model="search_key" class="width-100">
+              <el-option label="停车场名称" value="parkingName"></el-option>
+              <el-option label="详细区域" value="address"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">搜索</el-button>
+            <el-input v-model="keyword" class="width-140"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getParkingList">搜索</el-button>
+            <el-button type="primary" @click="clearFilterForm">清空</el-button>
           </el-form-item>
         </el-form>
       </el-col>
-      <el-col :span="3">
+      <el-col :span="2">
         <div class="pull-right">
           <router-link to="/parkingAdd">
             <el-button type="primary" size="small">新增停车场</el-button>
@@ -59,7 +66,7 @@
       <el-table-column type="selection" width="55"> </el-table-column>
       <el-table-column prop="parkingName" label="停车场名称"> </el-table-column>
       <el-table-column prop="type" label="类型"> </el-table-column>
-      <el-table-column prop="area" label="区域"> </el-table-column>
+      <el-table-column prop="address" label="区域"> </el-table-column>
       <el-table-column prop="disabled" label="禁启用">
         <template slot-scope="scope">
           <el-switch
@@ -70,7 +77,17 @@
           </el-switch>
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="查看位置"></el-table-column>
+      <el-table-column prop="lnglat" label="查看位置">
+        <template slot-scope="scoped">
+          <el-button
+            type="success"
+            size="small"
+            plain
+            @click="openMap(scoped.row)"
+            >查看地图</el-button
+          >
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template>
           <el-button type="primary" size="small" plain>编辑</el-button>
@@ -78,6 +95,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <map-dialog :dialogVisible.sync="visible" :data="mapData"></map-dialog>
     <div class="w-e-clear-fix margin-top-20">
       <el-pagination
         background
@@ -95,11 +113,13 @@
 <script>
 import { ParkingList } from "@/api/parking";
 import CityArea from "@/components/common/CityArea";
+import MapDialog from "@/components/dialog/MapDialog";
 
 export default {
   name: "ParkingList",
   components: {
-    CityArea
+    CityArea,
+    MapDialog
   },
   data() {
     return {
@@ -109,13 +129,16 @@ export default {
       currentPage: 1,
       parking_status: this.$store.state.config.parking_status,
       parking_type: this.$store.state.config.parking_type,
+      search_key: "",
+      keyword: "",
       filterForm: {
-        name: "",
         area: "",
         type: "",
         status: ""
       },
-      parkingData: []
+      parkingData: [],
+      mapData: {},
+      visible: false
     };
   },
   beforeMount() {
@@ -132,6 +155,16 @@ export default {
         pageSize: this.pageSize,
         pageNumber: this.pageNumber
       };
+      // 过滤筛选
+      const filterData = JSON.parse(JSON.stringify(this.filterForm));
+      for (let key in filterData) {
+        if (filterData[key]) {
+          requestData[key] = filterData[key];
+        }
+      }
+      if (this.search_key && this.keyword) {
+        requestData[this.search_key] = this.keyword;
+      }
       ParkingList(requestData)
         .then(response => {
           const data = response.data;
@@ -151,6 +184,20 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.getParkingList();
+    },
+    clearFilterForm() {
+      this.filterForm = {
+        area: "",
+        type: "",
+        status: ""
+      };
+      this.search_key = "";
+      this.keyword = "";
+      this.$refs.cityArea.clear();
+    },
+    openMap(data) {
+      this.visible = true;
+      this.mapData = data;
     }
   }
 };

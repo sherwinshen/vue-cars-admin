@@ -18,12 +18,17 @@ export default {
   data() {
     return {
       map: null,
-      zoom: 13,
+      zoom: 10,
       center: [116.404765, 39.918052]
     };
   },
   mounted() {
     lazyAMapApiLoaderInstance.load().then(() => {
+      this.mapCreate();
+    });
+  },
+  methods: {
+    mapCreate() {
       // eslint-disable-next-line no-undef
       this.map = new AMap.Map("amapVue", {
         center: [116.404765, 39.918052],
@@ -34,9 +39,7 @@ export default {
         this.$emit("lnglat", lnglat); // 子组件调父组件的方法
         this.setMarker(lnglat);
       });
-    });
-  },
-  methods: {
+    },
     setMapCenter(value) {
       amapAddressSetMapCenter(value, this.map);
     },
@@ -45,6 +48,9 @@ export default {
     },
     clearMarker() {
       amapClearMarker(this.map);
+    },
+    mapDestroy() {
+      this.map && this.map.destroy();
     }
   }
 };
