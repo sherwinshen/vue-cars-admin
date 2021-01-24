@@ -85,14 +85,16 @@ export default {
       }
     },
     changeData(values) {
-      this.$emit("update:cityAreaValue", values.join());
-      // 匹配最后区县项
-      const lastCode = values[values.length - 1];
-      const area = this.addressData.area.filter(
-        item => item.value === lastCode
-      )[0];
-      this.address[2] = area.label;
-      this.getAddress();
+      if (values && values.length > 0) {
+        this.$emit("update:cityAreaValue", values.join());
+        // 匹配最后区县项
+        const lastCode = values[values.length - 1];
+        const area = this.addressData.area.filter(
+          item => item.value === lastCode
+        )[0];
+        this.address[2] = area.label;
+        this.getAddress();
+      }
     },
     getAddress(node) {
       if (node) {

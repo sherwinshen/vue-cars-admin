@@ -606,3 +606,49 @@ filters: {
 </script>
 ```
 
+## 第31课时
+
+略。
+
+## 第32课时
+
+### 32.1 插槽
+
+具名插槽：
+
+```vue
+// 父组件
+<Child>
+  <template v-slot:header>
+    <h1>Here might be a page title</h1>
+  </template>
+</Child>
+```
+
+```vue
+// 子组件
+<div class="container">
+  <header>
+    <slot name="header"></slot>
+  </header>
+</div>
+```
+
+如何让父组件中的插槽内容能够访问子组件中才有的数据？绑定在 `<slot>` 元素上的 attribute 被称为**插槽 prop**，现在在父级作用域中，我们可以使用带值的 `v-slot` 来定义我们提供的插槽 prop 的名字。
+
+```vue
+// 父组件
+<Child>
+  <template v-slot:header="slotProps">
+    {{ slotProps.myProps.firstName }}
+  </template>
+</Child>
+```
+
+```vue
+// 子组件
+<span>
+  <slot name="header" :myProps="user"></slot>
+</span>
+```
+
