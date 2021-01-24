@@ -3,6 +3,8 @@
     ref="cascade"
     v-model="value"
     :props="options"
+    :class="{ 'cascader-input': initValueFlag }"
+    :placeholder="initValue"
     @change="changeData"
   ></el-cascader>
 </template>
@@ -69,10 +71,19 @@ export default {
             _this.getAddress(node);
           }
         }
-      }
+      },
+      initValue: "请选择省市区",
+      initValueFlag: false
     };
   },
   methods: {
+    /** 初始化默认值  */
+    initDefault(value) {
+      if (value) {
+        this.initValueFlag = true;
+        this.initValue = value.split(",").join(" / ");
+      }
+    },
     changeData(values) {
       this.$emit("update:cityAreaValue", values.join());
       // 匹配最后区县项

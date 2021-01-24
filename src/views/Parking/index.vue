@@ -62,11 +62,16 @@
       class="margin-top-10"
       :data="parkingData"
       border
+      v-loading="table_loading"
     >
-      <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column prop="parkingName" label="停车场名称"> </el-table-column>
-      <el-table-column prop="type" label="类型"> </el-table-column>
-      <el-table-column prop="address" label="区域"> </el-table-column>
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column prop="parkingName" label="停车场名称"></el-table-column>
+      <el-table-column prop="type" label="类型">
+        <template slot-scope="scope">
+          {{ scope.row.type | getType }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="address" label="区域"></el-table-column>
       <el-table-column prop="disabled" label="禁启用">
         <template slot-scope="scope">
           <el-switch
@@ -84,14 +89,20 @@
             size="small"
             plain
             @click="openMap(scoped.row)"
-            >查看地图</el-button
-          >
+            >查看地图
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作">
-        <template>
-          <el-button type="primary" size="small" plain>编辑</el-button>
-          <el-button type="danger" size="small" plain>删除</el-button>
+        <template slot-scope="scoped">
+          <el-button
+            type="primary"
+            size="small"
+            plain
+            @click="goToEdit(scoped.row.id)"
+            >编辑</el-button
+          >
+          <el-button type="danger" size="small" plain @click="delConfirm(scoped.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -111,18 +122,29 @@
 </template>
 
 <script>
-import { ParkingList } from "@/api/parking";
+import { ParkingList, ParkingDelete } from "@/api/parking";
 import CityArea from "@/components/common/CityArea";
 import MapDialog from "@/components/dialog/MapDialog";
 
+let _this;
 export default {
   name: "ParkingList",
   components: {
     CityArea,
     MapDialog
   },
+  filters: {
+    getType(value) {
+      const data = _this.parking_type.filter(item => item.value === value);
+      if (data && data.length > 0) {
+        return data[0].label;
+      }
+    }
+  },
   data() {
+    _this = this;
     return {
+      table_loading: false,
       pageSize: 10,
       pageNumber: 1,
       total: 0,
@@ -145,6 +167,14 @@ export default {
     this.getParkingList();
   },
   methods: {
+    goToEdit(id) {
+      this.$router.push({
+        name: "ParkingAdd",
+        query: {
+          id
+        }
+      });
+    },
     callback(params) {
       if (params.funcName) {
         this[params.funcName](params.data);
@@ -165,6 +195,7 @@ export default {
       if (this.search_key && this.keyword) {
         requestData[this.search_key] = this.keyword;
       }
+      this.table_loading = true;
       ParkingList(requestData)
         .then(response => {
           const data = response.data;
@@ -176,6 +207,28 @@ export default {
               this.total = data.data.total;
             }
           }
+          this.table_loading = false;
+        })
+        .catch(error => {
+          this.table_loading = false;
+          console.error("error", error);
+        });
+    },
+    /** 删除 */
+    delConfirm(id) {
+      this.$confirm("确定删除此信息", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          ParkingDelete({ id }).then(response => {
+            this.$message({
+              type: "success",
+              message: response.data.message
+            });
+            this.getParkingList();
+          });
         })
         .catch(error => {
           console.error("error", error);

@@ -483,3 +483,126 @@ Vue 实现响应式并不是数据发生变化之后 DOM 立即变化，而是�
 </script>
 ```
 
+## 第29课时
+
+### 29.1 修改placeholder的默认颜色
+
+例如修改input框的默认颜色：
+
+```css
+input::-webkit-input-placeholder{
+  color:#585c89;
+}
+input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+  color:#585c89;
+}
+input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+  color:#585c89;
+}
+input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
+  color:#585c89;
+}
+```
+
+## 第30课时
+
+### 30.1 过滤器
+
+Vue.js 允许你自定义过滤器，可被用于一些常见的文本格式化。过滤器可以用在两个地方：**双花括号插值和 `v-bind` 表达式** (后者从 2.1.0+ 开始支持)。
+
+```vue
+<!-- 在双花括号中 -->
+{{ message | capitalize }}
+
+<!-- 在 `v-bind` 中 -->
+<div v-bind:id="message | capitalize"></div>
+```
+
+```
+filters: {
+  capitalize: function (value) {
+    if (!value) return ''
+    value = value.toString()
+    return value.charAt(0).toUpperCase() + value.slice(1)
+  }
+}
+```
+
+在表单的实现中，实际的数据可能需要文本格式化，例如1对应“室内”，2对应“室外”，此时就需要用到过滤器。
+
+- 传统方法直接通过函数来格式化文本：
+
+```vue
+<template slot-scope="scoped">
+	{{getType(scoped.row.type)}}
+</template>
+<script>
+  export default{
+    data() {
+      return {}
+    },
+    methods: {
+      getType(value){
+        if(value===1){
+          return "室内";
+        }else{
+          return "室外";
+        }
+      } 
+    }
+  }
+</script>
+```
+
+- 也可以通过过滤器来格式化文本：
+
+```vue
+<template slot-scope="scoped">
+	{{scoped.row.type | getType}}
+</template>
+<script>
+  export default{
+    data() {
+      return {}
+    },
+    filters: {
+    	getType(value){
+        if(value===1){
+          return "室内";
+        }else{
+          return "室外";
+        }
+      } 
+    }
+  }
+</script>
+```
+
+如果在过滤器里使用this则会报错，对于过滤器里面无法使用this获取data里面的数据的问题？
+
+```vue
+<template slot-scope="scoped">
+	{{getType(scoped.row.type)}}
+</template>
+<script>
+  let _this = this;
+  export default{
+    data() {
+      _this = this
+      return {
+        num: 1
+      }
+    },
+    filters: {
+    	getType(value){
+        if(value=== _this.num){ // 通过外部设置_this来使得过滤器内也能访问到this
+          return "室内";
+        }else{
+          return "室外";
+        }
+      } 
+    }
+  }
+</script>
+```
+

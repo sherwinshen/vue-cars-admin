@@ -22,6 +22,12 @@ export default {
       center: [116.404765, 39.918052]
     };
   },
+  props: {
+    options: {
+      type: Object,
+      default: () => {}
+    }
+  },
   mounted() {
     lazyAMapApiLoaderInstance.load().then(() => {
       this.mapCreate();
@@ -33,6 +39,13 @@ export default {
       this.map = new AMap.Map("amapVue", {
         center: [116.404765, 39.918052],
         zoom: this.zoom
+      });
+      this.map.on("complete", () => {
+        if (this.options.mapLoad) {
+          this.$emit("callback", {
+            funcName: "mapLoad"
+          });
+        }
       });
       this.map.on("click", e => {
         const lnglat = amapGetLngLat(e);

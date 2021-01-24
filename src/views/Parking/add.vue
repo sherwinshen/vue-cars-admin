@@ -42,7 +42,12 @@
       </el-form-item>
       <el-form-item label="位置">
         <div class="map">
-          <Map ref="amap" @lnglat="updateLngLat" />
+          <Map
+            ref="amap"
+            :options="option_map"
+            @lnglat="updateLngLat"
+            @callback="callback"
+          />
         </div>
       </el-form-item>
       <el-form-item label="经纬度" prop="lnglat">
@@ -61,7 +66,7 @@
 <script>
 import Map from "@/components/Map";
 import CityArea from "@/components/common/CityArea";
-import { ParkingAdd } from "@/api/parking";
+import { ParkingAdd, ParkingDetailed, ParkingEdit } from "@/api/parking";
 
 export default {
   name: "ParkingAdd",
@@ -71,9 +76,13 @@ export default {
   },
   data() {
     return {
+      id: this.$route.query.id,
       button_loading: false,
       parking_status: this.$store.state.config.parking_status,
       parking_type: this.$store.state.config.parking_type,
+      option_map: {
+        mapLoad: true
+      },
       form: {
         parkingName: "",
         area: "",
@@ -104,6 +113,34 @@ export default {
         this[params.funcName](params.data);
       }
     },
+    // 恢复数据的时候需要地图已经加载完毕，因此通过地图加载回调来恢复数据
+    mapLoad() {
+      this.getDetail();
+    },
+    getDetail() {
+      if (!this.id) {
+        return false;
+      }
+      ParkingDetailed({ id: this.id }).then(response => {
+        const data = response.data.data;
+        // 还原数据
+        for (let key in data) {
+          // 接口请求出来的
+          if (Object.keys(this.form).includes(key)) {
+            this.form[key] = data[key];
+          }
+        }
+        // 设置覆盖物
+        const splitLnglat = data.lnglat.split(",");
+        const lnglat = {
+          lng: splitLnglat[0],
+          lat: splitLnglat[1]
+        };
+        this.$refs.amap.setMarker(lnglat);
+        // 初始化省市区
+        this.$refs.cityArea.initDefault(data.region);
+      });
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
@@ -116,7 +153,7 @@ export default {
     onSubmit() {
       this.$refs["parkingAddForm"].validate(valid => {
         if (valid) {
-          this.addParking();
+          this.id ? this.editParking() : this.addParking();
         } else {
           return false;
         }
@@ -136,6 +173,26 @@ export default {
         .catch(error => {
           console.error("error", error);
           this.button_loading = false;
+        });
+    },
+    editParking() {
+      let requestData = JSON.parse(JSON.stringify(this.form));
+      requestData.id = this.id;
+      this.button_loading = true;
+      ParkingEdit(requestData)
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: response.message
+          });
+          this.button_loading = false;
+          this.$router.push({
+            name: "ParkingIndex"
+          });
+        })
+        .catch(error => {
+          this.button_loading = false;
+          console.error(error);
         });
     },
     clearForm() {
