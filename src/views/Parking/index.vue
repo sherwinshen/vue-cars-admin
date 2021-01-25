@@ -100,20 +100,36 @@
       </template>
     </VueTable>
     <!--地图弹框部分-->
-
+    <VueDialog
+      ref="mapDialog"
+      :dialogFlag.sync="visible"
+      :title="dialogConfig.title"
+      :width="dialogConfig.width"
+      :closeOnClickModal="dialogConfig.closeOnClickModal"
+      :handle-opened="handleOpened"
+      :submit="submit"
+    >
+      <template v-slot>
+        <AMap ref="aMap" :height="'500px'"></AMap>
+      </template>
+    </VueDialog>
   </div>
 </template>
 
 <script>
 import CityArea from "@/components/common/CityArea";
 import VueTable from "@/components/VueTable";
+import VueDialog from "@/components/VueDialog";
+import AMap from "@/components/Map";
 import { ParkingDelete, ParkingStatus } from "@/api/parking";
 
 export default {
   name: "ParkingList",
   components: {
     CityArea,
-    VueTable
+    VueTable,
+    VueDialog,
+    AMap
   },
   data() {
     return {
@@ -181,6 +197,12 @@ export default {
       },
       // 地图弹框显示
       visible: false,
+      // 弹框配置
+      dialogConfig: {
+        title: "",
+        width: "50%",
+        closeOnClickModal: false
+      },
       // 地图弹框数据
       mapData: {},
       // 防止switch连续触发
@@ -191,7 +213,7 @@ export default {
     // 公共 - 子组件回调
     callback(params) {
       if (params.funcName) {
-        this[params.funcName](params.data);
+        this[params.funcName] && this[params.funcName](params.data);
       }
     },
     // 编辑停车场
@@ -250,6 +272,7 @@ export default {
     // 地图弹框显示
     openMap(data) {
       this.visible = true;
+      this.dialogConfig.title = data.parkingName;
       this.mapData = data;
     },
     // 搜索数据
@@ -280,6 +303,29 @@ export default {
       this.search_key = "";
       this.keyword = "";
       this.$refs.cityArea.clear();
+    },
+    // 弹窗打开
+    handleOpened() {
+      this.$refs.aMap.mapCreate();
+      // 调DOM元素的方法时，要确保DOM元素已被加载完成
+      this.$nextTick(() => {
+        // DOM元素渲染完成后执行
+        const splitLnglat = this.mapData.lnglat.split(",");
+        const lnglat = {
+          lng: splitLnglat[0],
+          lat: splitLnglat[1]
+        };
+        this.$refs.aMap.setMarker(lnglat);
+      });
+    },
+    // 弹窗关闭
+    handleClose() {
+      this.$refs.aMap.mapDestroy();
+    },
+    // 弹窗确定
+    submit() {
+      this.visible = false;
+      this.$refs.aMap.mapDestroy();
     }
   }
 };

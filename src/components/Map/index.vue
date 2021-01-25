@@ -1,5 +1,5 @@
 <template>
-  <div class="map-wrap">
+  <div :style="{ height: height }">
     <el-amap :vid="'amapVue'" :center="center" :zoom="zoom"></el-amap>
   </div>
 </template>
@@ -25,7 +25,11 @@ export default {
   props: {
     options: {
       type: Object,
-      default: () => {}
+      default: () => ({})
+    },
+    height: {
+      type: String,
+      default: "100px"
     }
   },
   mounted() {

@@ -16,14 +16,13 @@
         />
       </template>
       <template v-slot:amap>
-        <div class="map">
-          <AMap
-            ref="amap"
-            :options="mapOptions"
-            @lnglat="updateLngLat"
-            @callback="callback"
-          />
-        </div>
+        <AMap
+          ref="amap"
+          :options="mapOptions"
+          @lnglat="updateLngLat"
+          @callback="callback"
+          :height="'400px'"
+        />
       </template>
     </VueForm>
   </div>
@@ -84,7 +83,7 @@ export default {
         {
           type: "input",
           label: "经纬度",
-          placeholder: "请输入详细地址",
+          placeholder: "请在位置处点击",
           prop: "lnglat",
           disabled: true,
           rules: [
@@ -228,11 +227,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.map {
-  height: 400px;
-  .map-wrap {
-    height: 100%;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

@@ -52,7 +52,7 @@
 import { BrandLogo, BrandAdd, BrandEdit } from "@/api/brand";
 
 export default {
-  name: "AddBrands",
+  name: "BrandAdd",
   props: {
     dialogFlag: {
       type: Boolean,
