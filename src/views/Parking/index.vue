@@ -64,6 +64,7 @@
           v-model="slotProps.slotProps.status"
           active-color="#13ce66"
           inactive-color="#ff4949"
+          @change="switchChange(slotProps.slotProps)"
         >
         </el-switch>
       </template>
@@ -99,7 +100,7 @@
 </template>
 
 <script>
-import { ParkingDelete } from "@/api/parking";
+import { ParkingDelete, ParkingStatus } from "@/api/parking";
 import CityArea from "@/components/common/CityArea";
 import MapDialog from "@/components/dialog/MapDialog";
 import Table from "@/components/Table";
@@ -169,6 +170,8 @@ export default {
       visible: false,
       // 地图弹框数据
       mapData: {},
+      // 防止switch连续触发
+      switchFlag: false,
 
       parking_status: this.$store.state.config.parking_status,
       parking_type: this.$store.state.config.parking_type,
@@ -217,6 +220,29 @@ export default {
             console.log("error", error);
           });
       });
+    },
+    // 禁启用更改
+    switchChange(data) {
+      if (this.switchFlag) {
+        return false;
+      }
+      const requestData = {
+        id: data.id,
+        status: data.status
+      };
+      this.switchFlag = true;
+      ParkingStatus(requestData)
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: response.data.message
+          });
+          this.switchFlag = false;
+        })
+        .catch(error => {
+          console.error("error", error);
+          this.switchFlag = false;
+        });
     },
     // 地图弹框显示
     openMap(data) {

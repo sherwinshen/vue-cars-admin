@@ -37,6 +37,18 @@
             <slot :name="item.slotName" :slotProps="scope.row"></slot>
           </template>
         </el-table-column>
+        <!--图片渲染-->
+        <el-table-column
+          v-else-if="item.type === 'image'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width"
+        >
+          <template slot-scope="scope">
+            <img :src="scope.row.imgUrl" :width="item.imgWidth || 50" alt="" />
+          </template>
+        </el-table-column>
         <!--纯文本渲染-->
         <el-table-column
           v-else

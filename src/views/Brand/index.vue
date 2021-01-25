@@ -1,5 +1,6 @@
 <template>
   <div class="brand-list-wrap">
+    <!--搜索部分-->
     <el-row>
       <el-col :span="21">
         <el-form :inline="true" :model="searchForm" size="small">
@@ -16,63 +17,147 @@
       </el-col>
       <el-col :span="3">
         <div class="pull-right">
-          <el-button type="primary" size="small" @click="addBrands"
+          <el-button type="primary" size="small" @click="showAddDialog"
             >新增车辆品牌</el-button
           >
         </div>
       </el-col>
     </el-row>
-    <el-table :data="tableData" border>
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="imgUrl" label="Logo"></el-table-column>
-      <el-table-column prop="name" label="车辆品牌"></el-table-column>
-      <el-table-column prop="status" label="禁启用">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.disabled"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          >
-          </el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template>
-          <el-button type="primary" size="small" plain>编辑</el-button>
-          <el-button type="danger" size="small" plain>删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <add-brands :dialogFlag.sync="dialogFlag"></add-brands>
+    <!--表格部分-->
+    <Table ref="brandTable" class="margin-top-10" :tableConfig="tableConfig">
+      <template v-slot:status="slotProps">
+        <el-switch
+          v-model="slotProps.slotProps.status"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          @change="switchChange(slotProps.slotProps)"
+        >
+        </el-switch>
+      </template>
+      <template v-slot:operation="slotProps">
+        <el-button
+          type="primary"
+          size="small"
+          plain
+          @click="editBrandList(slotProps.slotProps)"
+          >编辑</el-button
+        >
+        <el-button
+          type="danger"
+          size="small"
+          plain
+          @click="deleteBrandList(slotProps.slotProps.id)"
+          >删除</el-button
+        >
+      </template>
+    </Table>
+    <!--新增弹窗部分-->
+    <AddBrands
+      :dialogFlag.sync="dialogFlag"
+      :data="brandData"
+      @updateData="updateTable"
+    ></AddBrands>
   </div>
 </template>
 
 <script>
 import AddBrands from "@/components/AddBrands";
+import Table from "@/components/Table";
+import { BrandDelete } from "@/api/brand";
 
 export default {
   name: "BrandList",
   components: {
-    AddBrands
+    AddBrands,
+    Table
   },
   data() {
     return {
+      // 表格配置
+      tableConfig: {
+        tHead: [
+          {
+            label: "LOGO",
+            prop: "imgUrl",
+            type: "image",
+            width: 150
+          },
+          {
+            label: "车辆品牌",
+            prop: "name",
+            type: "function",
+            callback: row => `${row.nameCh}/${row.nameEn}`
+          },
+          {
+            label: "禁启用",
+            prop: "status",
+            type: "slot",
+            slotName: "status"
+          },
+          {
+            label: "操作",
+            type: "slot",
+            width: 200,
+            slotName: "operation"
+          }
+        ],
+        url: "brandList",
+        data: {
+          pageSize: 10,
+          pageNumber: 1
+        }
+      },
+      // 弹窗显示
       dialogFlag: false,
+      // 编辑时弹窗传递数据
+      brandData: {},
+      // 搜索表单
       searchForm: {
         name: ""
-      },
-      tableData: [
-        {
-          imgUrl: "test",
-          name: "奔驰",
-          disabled: true
-        }
-      ]
+      }
     };
   },
   methods: {
-    addBrands() {
+    // 新增弹框显示
+    showAddDialog() {
+      this.brandData = {};
       this.dialogFlag = true;
+    },
+    // 编辑
+    editBrandList(value) {
+      this.brandData = JSON.parse(JSON.stringify(value));
+      this.dialogFlag = true;
+    },
+    // 删除
+    deleteBrandList(id) {
+      this.$confirm("确定删除此信息", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          BrandDelete({ id })
+            .then(response => {
+              this.$message({
+                type: "success",
+                message: response.data.message
+              });
+              this.updateTable();
+            })
+            .catch(error => {
+              console.error("error", error);
+            });
+        })
+        .catch(error => {
+          console.error("error", error);
+        });
+    },
+    // 禁启用切换
+    switchChange() {},
+    // 更新表格
+    updateTable() {
+      // 调用子组件的方法
+      this.$refs.brandTable.requestData();
     }
   }
 };
