@@ -14,11 +14,11 @@ import {
 } from "@/components/Map/map";
 
 export default {
-  name: "Map",
+  name: "AMap",
   data() {
     return {
       map: null,
-      zoom: 10,
+      zoom: 12,
       center: [116.404765, 39.918052]
     };
   },
@@ -31,6 +31,11 @@ export default {
   mounted() {
     lazyAMapApiLoaderInstance.load().then(() => {
       this.mapCreate();
+      this.map.on("click", e => {
+        const lnglat = amapGetLngLat(e);
+        this.$emit("lnglat", lnglat); // 子组件调父组件的方法
+        this.setMarker(lnglat);
+      });
     });
   },
   methods: {
@@ -46,11 +51,6 @@ export default {
             funcName: "mapLoad"
           });
         }
-      });
-      this.map.on("click", e => {
-        const lnglat = amapGetLngLat(e);
-        this.$emit("lnglat", lnglat); // 子组件调父组件的方法
-        this.setMarker(lnglat);
       });
     },
     setMapCenter(value) {
@@ -69,9 +69,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.map-wrap {
-  width: 100%;
-  height: 100%;
-}
-</style>
+<style lang="scss" scoped></style>

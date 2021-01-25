@@ -77,7 +77,7 @@
 import { TableData } from "@/api/common";
 
 export default {
-  name: "Table",
+  name: "VueTable",
   props: {
     tableConfig: {
       type: Object,
@@ -145,7 +145,7 @@ export default {
     },
     // 外部调用-加载数据
     requestData(params) {
-      // 处理业务逻辑
+      // 处理业务逻辑 - 如果外部有请求数据就用外部的
       if (params) {
         this.config.data = params;
       }

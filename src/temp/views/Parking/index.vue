@@ -59,11 +59,7 @@
       </el-col>
     </el-row>
     <!--表格部分-->
-    <VueTable
-      ref="parkingTable"
-      class="margin-top-10"
-      :tableConfig="tableConfig"
-    >
+    <Table ref="parkingTable" class="margin-top-10" :tableConfig="tableConfig">
       <template v-slot:status="slotProps">
         <el-switch
           v-model="slotProps.slotProps.status"
@@ -98,35 +94,27 @@
           >删除</el-button
         >
       </template>
-    </VueTable>
+    </Table>
     <!--地图弹框部分-->
-
+    <map-dialog :dialogVisible.sync="visible" :data="mapData"></map-dialog>
   </div>
 </template>
 
 <script>
-import CityArea from "@/components/common/CityArea";
-import VueTable from "@/components/VueTable";
 import { ParkingDelete, ParkingStatus } from "@/api/parking";
+import CityArea from "@/components/common/CityArea";
+import MapDialog from "@/components/dialog/MapDialog";
+import Table from "@/components/Table";
 
 export default {
   name: "ParkingList",
   components: {
     CityArea,
-    VueTable
+    MapDialog,
+    Table
   },
   data() {
     return {
-      parking_status: this.$store.state.config.radio_disabled,
-      parking_type: this.$store.state.config.parking_type,
-      search_key: "",
-      keyword: "",
-      filterForm: {
-        area: "",
-        type: "",
-        status: ""
-      },
-
       // 表格配置
       tableConfig: {
         tHead: [
@@ -184,7 +172,17 @@ export default {
       // 地图弹框数据
       mapData: {},
       // 防止switch连续触发
-      switchFlag: false
+      switchFlag: false,
+
+      parking_status: this.$store.state.config.radio_disabled,
+      parking_type: this.$store.state.config.parking_type,
+      search_key: "",
+      keyword: "",
+      filterForm: {
+        area: "",
+        type: "",
+        status: ""
+      }
     };
   },
   methods: {
