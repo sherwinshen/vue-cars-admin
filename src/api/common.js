@@ -37,7 +37,7 @@ export function GetCity(data = {}) {
 /**
  * 获取车辆品牌
  */
-export function GetCarsBrand(data = {}) {
+export function GetBrand(data = {}) {
   return service.request({
     method: "post",
     url: "/common/getCarsBrand/",

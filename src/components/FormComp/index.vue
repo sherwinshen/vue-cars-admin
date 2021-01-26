@@ -37,8 +37,8 @@
           v-for="radio in item.options"
           :label="radio.value"
           :key="radio.value"
-          >{{ radio.label }}</el-radio
-        >
+          >{{ radio.label }}
+        </el-radio>
       </el-radio-group>
       <!--select渲染-->
       <el-select
@@ -51,11 +51,15 @@
       >
         <el-option
           v-for="selectItem in item.options"
-          :key="selectItem.selectValue"
-          :value="selectItem.selectValue"
-          :label="selectItem.selectLabel"
+          :key="selectItem[item.selectValue]"
+          :value="selectItem[item.selectValue]"
+          :label="selectItem[item.selectLabel]"
         ></el-option>
       </el-select>
+      <!--富文本渲染-->
+      <template v-if="item.type === 'editor'">
+        <Editor ref="wangeditor" :content.sync="formData[item.prop]"></Editor>
+      </template>
     </el-form-item>
     <!--表单按钮-->
     <el-form-item>
@@ -72,8 +76,11 @@
 </template>
 
 <script>
+import Editor from "@/components/common/Editor";
+
 export default {
   name: "FormComp",
+  components: { Editor },
   props: {
     formData: {
       type: Object,
@@ -140,6 +147,10 @@ export default {
     },
     reset() {
       this.$refs.form.resetFields();
+      // 清除富文本内容
+      if (this.$refs.wangeditor[0]) {
+        this.$refs.wangeditor[0].reset();
+      }
     }
   }
 };

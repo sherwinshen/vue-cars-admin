@@ -15,8 +15,8 @@ export default {
   color: $color-main;
   font-size: 35px;
   position: absolute;
-  top: 40%;
   left: 50%;
   @include webkit(transform, translateX(-50%));
+  margin-top: 200px;
 }
 </style>

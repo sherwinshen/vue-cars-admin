@@ -15,6 +15,6 @@ export default {
   @include webkit(box-sizing, border-box);
   position: relative;
   padding: 30px;
-  height: 100%;
+  //height: 100%;
 }
 </style>
