@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="rent-list-wrap"></div>
 </template>
 
 <script>

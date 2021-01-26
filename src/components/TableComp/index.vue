@@ -74,10 +74,10 @@
 </template>
 
 <script>
-import { TableData } from "@/api/common";
+import { GetTableData } from "@/api/common";
 
 export default {
-  name: "VueTable",
+  name: "TableComp",
   props: {
     tableConfig: {
       type: Object,
@@ -86,7 +86,6 @@ export default {
   },
   data() {
     return {
-      // 表格加载
       table_loading: false,
       data: [],
       total: 0,
@@ -118,14 +117,14 @@ export default {
       }
       this.loadData(); // 加载数据
     },
-    // 加载数据
+    // 内部调用-加载数据
     loadData() {
       const requestData = {
         url: this.config.url,
         data: this.config.data
       };
       this.table_loading = true;
-      TableData(requestData)
+      GetTableData(requestData)
         .then(response => {
           const data = response.data;
           // 判断数据是否存在

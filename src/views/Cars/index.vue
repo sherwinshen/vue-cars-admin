@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="cars-list-wrap"></div>
 </template>
 
 <script>

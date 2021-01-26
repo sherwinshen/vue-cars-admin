@@ -43,6 +43,7 @@ export default {
     });
   },
   methods: {
+    // 创建地图实例
     mapCreate() {
       // eslint-disable-next-line no-undef
       this.map = new AMap.Map("amapVue", {
@@ -57,15 +58,19 @@ export default {
         }
       });
     },
+    // 设置定位
     setMapCenter(value) {
       amapAddressSetMapCenter(value, this.map);
     },
+    // 设置覆盖物
     setMarker(value) {
       amapSetMarker(value, this.map);
     },
+    // 清除覆盖物
     clearMarker() {
       amapClearMarker(this.map);
     },
+    // 销毁地图实例
     mapDestroy() {
       this.map && this.map.destroy();
     }

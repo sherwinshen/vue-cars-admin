@@ -1,58 +1,51 @@
 <template>
-  <el-dialog
-    title="新增车辆品牌"
-    :visible.sync="dialogVisible"
-    width="50%"
-    @close="handleClose"
-    @opened="handleOpened"
-    :close-on-click-modal="false"
-  >
-    <el-form ref="form" :model="form" label-width="100px">
-      <el-form-item label="品牌中文" prop="nameCh">
-        <el-input v-model="form.nameCh"></el-input>
-      </el-form-item>
-      <el-form-item label="品牌英文" prop="nameEn">
-        <el-input v-model="form.nameEn"></el-input>
-      </el-form-item>
-      <el-form-item label="LOGO" prop="imgUrl">
-        <div class="upload-img-wrap">
-          <div class="upload-img">
-            <img v-show="logo_current" :src="logo_current" alt="" />
+  <div class="brand-add-wrap">
+    <el-dialog
+      title="新增车辆品牌"
+      :visible.sync="dialogVisible"
+      width="50%"
+      @close="handleClose"
+      @opened="handleOpened"
+      :close-on-click-modal="false"
+    >
+      <FormComp
+        ref="brandAddForm"
+        :formItem="formItem"
+        :formData="formData"
+        label-width="100px"
+      >
+        <template v-slot:imgUrl>
+          <div class="upload-img-wrap">
+            <div class="upload-img">
+              <img v-show="logo_current" :src="logo_current" alt="" />
+            </div>
+            <ul class="img-list">
+              <li
+                v-for="item in logoList"
+                :key="item.id"
+                @click="logo_current = item.img"
+              >
+                <img :src="item.img" :alt="item.name" />
+              </li>
+            </ul>
           </div>
-          <ul class="img-list">
-            <li
-              v-for="item in logoList"
-              :key="item.id"
-              @click="logo_current = item.img"
-            >
-              <img :src="item.img" :alt="item.name" />
-            </li>
-          </ul>
-        </div>
-      </el-form-item>
-      <el-form-item label="禁启用" prop="status">
-        <el-radio-group v-model="form.status">
-          <el-radio
-            v-for="item in radio_disabled"
-            :key="item.value"
-            :label="item.value"
-            >{{ item.label }}</el-radio
-          >
-        </el-radio-group>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">取 消</el-button>
-      <el-button type="primary" @click="submit">确 定</el-button>
-    </span>
-  </el-dialog>
+        </template>
+      </FormComp>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 import { BrandLogo, BrandAdd, BrandEdit } from "@/api/brand";
+import FormComp from "@/components/FormComp";
 
 export default {
   name: "BrandAdd",
+  components: { FormComp },
   props: {
     dialogFlag: {
       type: Boolean,
@@ -69,7 +62,37 @@ export default {
       radio_disabled: this.$store.state.config.radio_disabled,
       logoList: [],
       logo_current: "",
-      form: {
+      formItem: [
+        {
+          type: "input",
+          label: "品牌中文",
+          prop: "nameCh",
+          placeholder: "请输入品牌中文",
+          required: true
+        },
+        {
+          type: "input",
+          label: "品牌英文",
+          prop: "nameEn",
+          placeholder: "请输入品牌英文",
+          required: true
+        },
+        {
+          type: "slot",
+          label: "LOGO",
+          prop: "imgUrl",
+          slotName: "imgUrl",
+          required: true
+        },
+        {
+          type: "radio",
+          label: "禁启用",
+          prop: "status",
+          options: this.$store.state.config.radio_disabled,
+          required: true
+        }
+      ],
+      formData: {
         nameCh: "",
         nameEn: "",
         status: "",
@@ -115,14 +138,14 @@ export default {
     // 显示数据
     getDetail() {
       if (this.data) {
-        this.form = this.data;
+        this.formData = this.data;
         this.logo_current = this.data.imgUrl;
-        this.form.imgUrl = this.data.imgUrl;
+        this.formData.imgUrl = this.data.imgUrl;
       }
     },
     // 清除表单
     clearForm() {
-      this.$refs["form"].resetFields();
+      this.$refs.brandAddForm.reset();
       this.logo_current = "";
     },
     // 提交
@@ -131,8 +154,8 @@ export default {
     },
     // 添加brand
     addBrandList() {
-      this.form.imgUrl = this.logo_current;
-      BrandAdd(this.form)
+      this.formData.imgUrl = this.logo_current;
+      BrandAdd(this.formData)
         .then(response => {
           this.$message({
             type: "success",
@@ -147,8 +170,8 @@ export default {
     },
     // 编辑brand
     editBrandList() {
-      this.form.imgUrl = this.logo_current;
-      BrandEdit(this.form).then(response => {
+      this.formData.imgUrl = this.logo_current;
+      BrandEdit(this.formData).then(response => {
         this.$message({
           type: "success",
           message: response.data.message

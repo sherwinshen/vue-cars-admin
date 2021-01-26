@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="order-list-wrap"></div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="member-detail-wrap"></div>
 </template>
 
 <script>

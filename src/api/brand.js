@@ -45,7 +45,7 @@ export function BrandDetailed(data = {}) {
   });
 }
 
-/** 修改 */
+/** 编辑 */
 export function BrandEdit(data = {}) {
   return service.request({
     method: "post",

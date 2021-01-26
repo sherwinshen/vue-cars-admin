@@ -24,7 +24,11 @@
       </el-col>
     </el-row>
     <!--表格部分-->
-    <VueTable ref="brandTable" class="margin-top-10" :tableConfig="tableConfig">
+    <TableComp
+      ref="brandTable"
+      class="margin-top-10"
+      :tableConfig="tableConfig"
+    >
       <template v-slot:status="slotProps">
         <el-switch
           v-model="slotProps.slotProps.status"
@@ -50,7 +54,7 @@
           >删除
         </el-button>
       </template>
-    </VueTable>
+    </TableComp>
     <!--新增弹窗部分-->
     <BrandAdd
       :dialogFlag.sync="dialogFlag"
@@ -61,16 +65,13 @@
 </template>
 
 <script>
-import VueTable from "@/components/VueTable";
+import TableComp from "@/components/TableComp";
 import BrandAdd from "@/views/Brand/add";
-import { BrandDelete } from "@/api/brand";
+import { BrandDelete, BrandStatus } from "@/api/brand";
 
 export default {
   name: "BrandList",
-  components: {
-    VueTable,
-    BrandAdd
-  },
+  components: { TableComp, BrandAdd },
   data() {
     return {
       // 表格配置
@@ -107,14 +108,16 @@ export default {
           pageNumber: 1
         }
       },
-      // 弹窗显示
-      dialogFlag: false,
-      // 编辑时弹窗传递数据
-      brandData: {},
+      // switch防连续处罚
+      switchFlag: false,
       // 搜索表单
       searchForm: {
         name: ""
-      }
+      },
+      // 弹窗显示
+      dialogFlag: false,
+      // 编辑时弹窗传递数据
+      brandData: {}
     };
   },
   methods: {
@@ -153,7 +156,28 @@ export default {
         });
     },
     // 禁启用切换
-    switchChange() {},
+    switchChange(data) {
+      if (this.switchFlag) {
+        return false;
+      }
+      const requestData = {
+        id: data.id,
+        status: data.status
+      };
+      this.switchFlag = true;
+      BrandStatus(requestData)
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: response.data.message
+          });
+          this.switchFlag = false;
+        })
+        .catch(error => {
+          console.error("error", error);
+          this.switchFlag = false;
+        });
+    },
     // 更新表格
     updateTable() {
       // 调用子组件的方法

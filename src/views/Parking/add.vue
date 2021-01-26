@@ -1,6 +1,6 @@
 <template>
   <div class="parking-add-wrap">
-    <VueForm
+    <FormComp
       ref="parkingAddForm"
       :formItem="formItem"
       :formHandler="formHandler"
@@ -24,23 +24,19 @@
           :height="'400px'"
         />
       </template>
-    </VueForm>
+    </FormComp>
   </div>
 </template>
 
 <script>
-import VueForm from "@/components/VueForm";
+import FormComp from "@/components/FormComp";
 import CityArea from "@/components/common/CityArea";
 import AMap from "@/components/Map";
 import { ParkingAdd, ParkingDetailed, ParkingEdit } from "@/api/parking";
 
 export default {
   name: "ParkingAdd",
-  components: {
-    VueForm,
-    CityArea,
-    AMap
-  },
+  components: { FormComp, CityArea, AMap },
   data() {
     return {
       id: this.$route.query.id,
@@ -51,33 +47,35 @@ export default {
           label: "停车场名称",
           prop: "parkingName",
           placeholder: "请输入停车场名称",
-          rules: [
-            { required: true, message: "请输入停车场名称", trigger: "blur" }
-          ]
+          required: true
         },
         {
           type: "slot",
           label: "区域",
           prop: "area",
-          slotName: "area"
+          slotName: "area",
+          required: true
         },
         {
           type: "radio",
           label: "类型",
           prop: "type",
-          options: this.$store.state.config.parking_type
+          options: this.$store.state.config.parking_type,
+          required: true
         },
         {
           type: "inputNumber",
           label: "可停放车辆",
           placeholder: "请输入数字类型",
-          prop: "carsNumber"
+          prop: "carsNumber",
+          required: true
         },
         {
           type: "radio",
           label: "禁启用",
           prop: "status",
-          options: this.$store.state.config.radio_disabled
+          options: this.$store.state.config.radio_disabled,
+          required: true
         },
         { type: "slot", slotName: "amap", label: "位置" },
         {
@@ -86,9 +84,7 @@ export default {
           placeholder: "请在位置处点击",
           prop: "lnglat",
           disabled: true,
-          rules: [
-            { required: true, message: "经纬度不能为空", trigger: "change" }
-          ]
+          required: true
         }
       ],
       // 表单操作

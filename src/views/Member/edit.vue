@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="member-edit-wrap"></div>
 </template>
 
 <script>

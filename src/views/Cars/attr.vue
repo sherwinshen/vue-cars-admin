@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="cars-attr-wrap"></div>
 </template>
 
 <script>
