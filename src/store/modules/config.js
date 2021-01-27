@@ -20,8 +20,8 @@ const state = {
   ],
   // 年检
   year_check: [
-    { label: "未年检", value: false },
-    { label: "已年检", value: true }
+    { label: "未年检", value: false, subValue: "0" },
+    { label: "已年检", value: true, subValue: "1" }
   ],
   // 档位
   gear: [

@@ -16,6 +16,18 @@ export default {
     content: {
       type: String,
       default: ""
+    },
+    // 添加一个value是为了恢复content的时候用，同时又不根据sync一样一直会出发
+    value: {
+      type: String,
+      default: ""
+    }
+  },
+  watch: {
+    value: {
+      handler(newValue) {
+        this.editor.txt.html(newValue);
+      }
     }
   },
   mounted() {

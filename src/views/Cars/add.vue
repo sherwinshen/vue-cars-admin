@@ -65,7 +65,7 @@
 <script>
 import FormComp from "@/components/FormComp";
 import { GetBrand, GetParking } from "@/api/common";
-import { CarsAdd } from "@/api/cars";
+import { CarsAdd, CarsDetailed } from "@/api/cars";
 
 export default {
   name: "CarsAdd",
@@ -216,6 +216,21 @@ export default {
       if (!this.id) {
         return false;
       }
+      CarsDetailed({ id: this.id })
+        .then(response => {
+          const data = response.data.data;
+          if (!data) {
+            return false;
+          }
+          for (let key in data) {
+            if (Object.keys(this.formData).includes(key)) {
+              this.formData[key] = data[key];
+            }
+          }
+        })
+        .catch(error => {
+          console.error("error", error);
+        });
     },
     // 获取品牌列表
     getBrandList() {

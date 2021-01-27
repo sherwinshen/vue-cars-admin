@@ -58,7 +58,7 @@
       </el-select>
       <!--富文本渲染-->
       <template v-if="item.type === 'editor'">
-        <Editor ref="wangeditor" :content.sync="formData[item.prop]"></Editor>
+        <Editor ref="wangeditor" :content.sync="formData[item.prop]" :value="formData[item.prop]"></Editor>
       </template>
     </el-form-item>
     <!--表单按钮-->

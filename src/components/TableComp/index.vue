@@ -49,6 +49,45 @@
             <img :src="scope.row.imgUrl" :width="item.imgWidth || 50" alt="" />
           </template>
         </el-table-column>
+        <!--操作渲染-->
+        <el-table-column
+          v-else-if="item.type === 'operation'"
+          :label="item.label"
+          :key="item.prop"
+          :width="item.width"
+        >
+          <template slot-scope="scope">
+            <!--编辑按钮-->
+            <template v-if="item.default && item.default.editButton">
+              <el-button
+                type="primary"
+                size="small"
+                plain
+                @click="
+                  editItem(
+                    scope.row[item.default.id || 'id'],
+                    item.default.editLink
+                  )
+                "
+                >编辑
+              </el-button>
+            </template>
+            <!--删除按钮-->
+            <template v-if="item.default && item.default.deleteButton">
+              <el-button
+                type="danger"
+                size="small"
+                plain
+                @click="deleteItem(scope.row.id)"
+                >删除
+              </el-button>
+            </template>
+            <!--自定义按钮-->
+            <template v-else>
+              <slot :name="item.slotName" :slotProps="scope.row"></slot>
+            </template>
+          </template>
+        </el-table-column>
         <!--纯文本渲染-->
         <el-table-column
           v-else
@@ -74,7 +113,7 @@
 </template>
 
 <script>
-import { GetTableData } from "@/api/common";
+import { GetTableData, DeleteTableData } from "@/api/common";
 
 export default {
   name: "TableComp",
@@ -149,6 +188,41 @@ export default {
         this.config.data = params;
       }
       this.loadData();
+    },
+    // 删除操作
+    deleteItem(id) {
+      this.$confirm("确定删除此信息", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let requestData = {
+            url: this.tableConfig.url + "Delete",
+            data: { id }
+          };
+          DeleteTableData(requestData)
+            .then(response => {
+              this.$message({
+                type: "success",
+                message: response.data.message
+              });
+              this.loadData();
+            })
+            .catch(error => {
+              console.error("error", error);
+            });
+        })
+        .catch(() => {});
+    },
+    // 编辑操作
+    editItem(id, routerName) {
+      this.$router.push({
+        name: routerName,
+        query: {
+          id
+        }
+      });
     },
     // 页面切换
     handleCurrentChange(val) {
