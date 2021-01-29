@@ -1,63 +1,5 @@
 <template>
   <div class="parking-list-wrap">
-    <!--搜索部分-->
-    <el-row>
-      <el-col :span="22">
-        <el-form
-          :inline="true"
-          :model="filterForm"
-          class="filter-form"
-          size="small"
-        >
-          <el-form-item label="区域">
-            <CityArea
-              ref="cityArea"
-              :cityAreaValue.sync="filterForm.area"
-            ></CityArea>
-          </el-form-item>
-          <el-form-item label="类型">
-            <el-select v-model="filterForm.type" class="width-100">
-              <el-option
-                v-for="item in parking_type"
-                :label="item.label"
-                :value="item.value"
-                :key="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="禁启用" prop="status">
-            <el-select v-model="filterForm.status" class="width-100">
-              <el-option
-                v-for="item in parking_status"
-                :label="item.label"
-                :value="item.value"
-                :key="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="关键词" prop="status">
-            <el-select v-model="search_key" class="width-100">
-              <el-option label="停车场名称" value="parkingName"></el-option>
-              <el-option label="详细区域" value="address"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="keyword" class="width-140"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="searchData">搜索</el-button>
-            <el-button type="primary" @click="clearFilterForm">清空</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :span="2">
-        <div class="pull-right">
-          <router-link to="/parkingAdd">
-            <el-button type="primary" size="small">新增停车场</el-button>
-          </router-link>
-        </div>
-      </el-col>
-    </el-row>
     <!--表格部分-->
     <TableComp
       ref="parkingTable"
@@ -106,13 +48,12 @@
 
 <script>
 import TableComp from "@/components/TableComp";
-import CityArea from "@/components/common/CityArea";
 import DialogMap from "@/components/dialog/DialogMap";
 import { ParkingDelete, ParkingStatus } from "@/api/parking";
 
 export default {
   name: "ParkingList",
-  components: { TableComp, CityArea, DialogMap },
+  components: { TableComp, DialogMap },
   data() {
     return {
       // 表格配置
@@ -165,6 +106,39 @@ export default {
         data: {
           pageSize: 10,
           pageNumber: 1
+        },
+        searchFlag: true,
+        formItem: [
+          { type: "region", label: "区域", prop: "area" },
+          {
+            type: "select",
+            prop: "type",
+            label: "类型",
+            class: "width-100",
+            options: this.$store.state.config.parking_type,
+            selectValue: "value",
+            selectLabel: "label"
+          },
+          {
+            type: "select",
+            prop: "status",
+            label: "禁启用",
+            class: "width-100",
+            options: this.$store.state.config.radio_disabled,
+            selectValue: "value",
+            selectLabel: "label"
+          },
+          {
+            type: "keyword",
+            label: "关键字",
+            options: ["parkingName", "address"]
+          }
+        ],
+        formConfig: {
+          addButton: true,
+          addLink: "/parkingAdd",
+          addLabel: "新增",
+          resetButton: true
         }
       },
       // 地图弹框显示
@@ -172,17 +146,7 @@ export default {
       // 地图弹框数据
       mapData: {},
       // 防止switch连续触发
-      switchFlag: false,
-
-      parking_status: this.$store.state.config.radio_disabled,
-      parking_type: this.$store.state.config.parking_type,
-      search_key: "",
-      keyword: "",
-      filterForm: {
-        area: "",
-        type: "",
-        status: ""
-      }
+      switchFlag: false
     };
   },
   methods: {
@@ -249,35 +213,6 @@ export default {
     openMap(data) {
       this.visible = true;
       this.mapData = data;
-    },
-    // 搜索数据
-    searchData() {
-      const requestData = {
-        pageSize: 10,
-        pageNumber: 1
-      };
-      // 过滤筛选
-      const filterData = JSON.parse(JSON.stringify(this.filterForm));
-      for (let key in filterData) {
-        if (filterData[key]) {
-          requestData[key] = filterData[key];
-        }
-      }
-      if (this.search_key && this.keyword) {
-        requestData[this.search_key] = this.keyword;
-      }
-      this.$refs.parkingTable.requestData(requestData);
-    },
-    // 清空搜索表单
-    clearFilterForm() {
-      this.filterForm = {
-        area: "",
-        type: "",
-        status: ""
-      };
-      this.search_key = "";
-      this.keyword = "";
-      this.$refs.cityArea.clear();
     }
   }
 };

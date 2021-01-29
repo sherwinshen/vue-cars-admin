@@ -1,5 +1,12 @@
 <template>
   <div class="table-wrap">
+    <SearchForm
+      v-if="tableConfig.searchFlag"
+      :form-item="tableConfig.formItem"
+      :form-config="tableConfig.formConfig"
+      :form-handler="tableConfig.formHandler"
+      @callback="callback"
+    ></SearchForm>
     <el-table
       ref="table"
       :data="data"
@@ -114,9 +121,11 @@
 
 <script>
 import { GetTableData, DeleteTableData } from "@/api/common";
+import SearchForm from "@/components/SearchForm";
 
 export default {
   name: "TableComp",
+  components: { SearchForm },
   props: {
     tableConfig: {
       type: Object,
@@ -147,6 +156,12 @@ export default {
     }
   },
   methods: {
+    // 公共 - 子组件回调
+    callback(params) {
+      if (params.funcName) {
+        this[params.funcName] && this[params.funcName](params.data);
+      }
+    },
     // 初始化表单配置
     initConfig(tableConfig) {
       for (let key in tableConfig) {
@@ -228,6 +243,13 @@ export default {
     handleCurrentChange(val) {
       this.config.data.pageNumber = val;
       this.loadData();
+    },
+    // 搜索
+    search(data) {
+      const searchData = data;
+      searchData.pageNumber = 1;
+      searchData.pageSize = 10;
+      this.requestData(searchData);
     }
   }
 };

@@ -27,6 +27,7 @@ export default {
       switchDisabled: "",
       // 表格配置
       tableConfig: {
+        // 表单配置
         tHead: [
           { label: "车牌号", prop: "carsMode" },
           { label: "车辆品牌", prop: "nameCh" },
@@ -71,10 +72,45 @@ export default {
             }
           }
         ],
+        // 表单请求地址
         url: "carsList",
+        // 表单请求数据
         data: {
           pageSize: 10,
           pageNumber: 1
+        },
+        searchFlag: true,
+        formItem: [
+          { type: "region", label: "区域", prop: "area" },
+          {
+            type: "select",
+            prop: "type",
+            label: "类型",
+            class: "width-100",
+            options: this.$store.state.config.parking_type,
+            selectValue: "value",
+            selectLabel: "label"
+          },
+          {
+            type: "select",
+            prop: "status",
+            label: "禁启用",
+            class: "width-100",
+            options: this.$store.state.config.radio_disabled,
+            selectValue: "value",
+            selectLabel: "label"
+          },
+          {
+            type: "keyword",
+            label: "关键字",
+            options: ["parkingName", "carsNumber", "address"]
+          }
+        ],
+        formConfig: {
+          addButton: true,
+          addLink: "/carsAdd",
+          addLabel: "新增",
+          resetButton: true
         }
       }
     };
