@@ -6,6 +6,7 @@
       :formHandler="formHandler"
       :formData="formData"
       :buttonLoading="button_loading"
+      :isRestore="isRestore"
     >
       <template v-slot:maintain>
         <el-date-picker
@@ -65,7 +66,7 @@
 <script>
 import FormComp from "@/components/FormComp";
 import { GetBrand, GetParking } from "@/api/common";
-import { CarsAdd, CarsDetailed } from "@/api/cars";
+import { CarsAdd, CarsDetailed, CarsEdit } from "@/api/cars";
 
 export default {
   name: "CarsAdd",
@@ -202,6 +203,7 @@ export default {
         maintainDate: "",
         status: null
       },
+      isRestore: false, // 是否为恢复数据
       button_loading: false
     };
   },
@@ -227,6 +229,7 @@ export default {
               this.formData[key] = data[key];
             }
           }
+          this.isRestore = true;
         })
         .catch(error => {
           console.error("error", error);
@@ -294,7 +297,18 @@ export default {
         });
     },
     // 编辑数据
-    edit() {},
+    edit() {
+      CarsEdit({ ...this.formData, id: this.id })
+        .then(response => {
+          this.$message({
+            message: response.data.message,
+            type: "success"
+          });
+        })
+        .catch(error => {
+          console.error("error", error);
+        });
+    },
     // 重置数据
     reset() {
       this.$refs.carsAddForm.reset();

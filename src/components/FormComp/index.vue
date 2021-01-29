@@ -58,7 +58,7 @@
       </el-select>
       <!--富文本渲染-->
       <template v-if="item.type === 'editor'">
-        <Editor ref="wangeditor" :content.sync="formData[item.prop]" :value="formData[item.prop]"></Editor>
+        <Editor ref="wangeditor" :content.sync="formData[item.prop]"></Editor>
       </template>
     </el-form-item>
     <!--表单按钮-->
@@ -98,6 +98,10 @@ export default {
       type: String,
       default: "100px"
     },
+    isRestore: {
+      type: Boolean,
+      default: false
+    },
     buttonLoading: {
       type: Boolean,
       default: false
@@ -116,6 +120,18 @@ export default {
     formItem: {
       handler() {
         this.initFormData();
+      },
+      immediate: true
+    },
+    isRestore: {
+      handler(value) {
+        // 为了恢复编辑器的数据
+        if (value) {
+          const items = this.formItem.filter(item => item.type === "editor");
+          if (items.length > 0) {
+            this.$refs.wangeditor[0].restore(this.formData[items[0].prop]);
+          }
+        }
       },
       immediate: true
     }

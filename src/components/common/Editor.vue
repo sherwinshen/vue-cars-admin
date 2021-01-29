@@ -16,18 +16,6 @@ export default {
     content: {
       type: String,
       default: ""
-    },
-    // 添加一个value是为了恢复content的时候用，同时又不根据sync一样一直会出发
-    value: {
-      type: String,
-      default: ""
-    }
-  },
-  watch: {
-    value: {
-      handler(newValue) {
-        this.editor.txt.html(newValue);
-      }
     }
   },
   mounted() {
@@ -42,6 +30,12 @@ export default {
       };
       this.editor.create(); // 创建富文本实例
     },
+    // 恢复数据
+    restore(value) {
+      console.log(1111)
+      this.editor.txt.html(value);
+    },
+    // 重置数据
     reset() {
       this.editor.txt.clear();
     }
