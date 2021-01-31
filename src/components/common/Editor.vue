@@ -32,7 +32,6 @@ export default {
     },
     // 恢复数据
     restore(value) {
-      console.log(1111)
       this.editor.txt.html(value);
     },
     // 重置数据

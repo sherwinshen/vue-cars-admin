@@ -97,6 +97,12 @@ export default {
           required: true
         },
         {
+          type: "upload",
+          prop: "carsImg",
+          label: "略缩图",
+          required: true
+        },
+        {
           type: "input",
           label: "车辆型号",
           placeholder: "请输入车辆型号",
@@ -201,7 +207,8 @@ export default {
         carsAttr: "",
         content: "",
         maintainDate: "",
-        status: null
+        status: null,
+        carsImg: ""
       },
       isRestore: false, // 是否为恢复数据
       button_loading: false

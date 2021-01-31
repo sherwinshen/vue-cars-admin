@@ -30,7 +30,7 @@
       </el-input-number>
       <!--radio渲染-->
       <el-radio-group
-        v-if="item.type === 'radio'"
+        v-else-if="item.type === 'radio'"
         v-model="formData[item.prop]"
       >
         <el-radio
@@ -43,7 +43,7 @@
       <!--select渲染-->
       <el-select
         :filterable="item.filterable || false"
-        v-if="item.type === 'select'"
+        v-else-if="item.type === 'select'"
         v-model="formData[item.prop]"
         :placeholder="item.placeholder"
         :style="{ width: item.width }"
@@ -56,8 +56,15 @@
           :label="selectItem[item.selectLabel]"
         ></el-option>
       </el-select>
+      <!--图片上传-->
+      <template v-else-if="item.type === 'upload'">
+        <ImgUpload
+          ref="imgUpload"
+          :value.sync="formData[item.prop]"
+        ></ImgUpload>
+      </template>
       <!--富文本渲染-->
-      <template v-if="item.type === 'editor'">
+      <template v-else-if="item.type === 'editor'">
         <Editor ref="wangeditor" :content.sync="formData[item.prop]"></Editor>
       </template>
     </el-form-item>
@@ -77,10 +84,11 @@
 
 <script>
 import Editor from "@/components/common/Editor";
+import ImgUpload from "@/components/common/ImgUpload";
 
 export default {
   name: "FormComp",
-  components: { Editor },
+  components: { ImgUpload, Editor },
   props: {
     formData: {
       type: Object,
