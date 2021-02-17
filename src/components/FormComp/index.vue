@@ -172,7 +172,7 @@ export default {
     reset() {
       this.$refs.form.resetFields();
       // 清除富文本内容
-      if (this.$refs.wangeditor[0]) {
+      if (this.$refs.wangeditor && this.$refs.wangeditor[0]) {
         this.$refs.wangeditor[0].reset();
       }
     }

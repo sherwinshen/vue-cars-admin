@@ -207,12 +207,12 @@ export default {
         .then(response => {
           this.$message({
             type: "success",
-            message: response.message
+            message: response.data.message
           });
           this.button_loading = false;
-          this.$router.push({
-            name: "ParkingIndex"
-          });
+          // this.$router.push({
+          //   name: "ParkingList"
+          // });
         })
         .catch(error => {
           this.button_loading = false;
