@@ -68,6 +68,18 @@
           </el-button>
         </router-link>
       </div>
+      <div class="pull-right" v-if="formConfig.addLinkType">
+        <el-button
+          :type="formConfig.addLinkConfig.type"
+          size="small"
+          @click="
+            formConfig.addLinkConfig.handler &&
+              formConfig.addLinkConfig.handler()
+          "
+        >
+          {{ formConfig.addLinkConfig.label }}
+        </el-button>
+      </div>
     </el-col>
   </el-row>
 </template>

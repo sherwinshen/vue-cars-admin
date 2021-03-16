@@ -139,6 +139,7 @@ export default {
       total: 0,
       currentPage: 1,
       config: {
+        isRequest: true, // 初始化是否请求接口
         tHead: [],
         selectionFlag: true,
         paginationFlag: true,
@@ -169,7 +170,7 @@ export default {
           this.config[key] = tableConfig[key];
         }
       }
-      this.loadData(); // 加载数据
+      this.config.isRequest && this.loadData(); // 加载数据
     },
     // 内部调用-加载数据
     loadData() {

@@ -96,11 +96,16 @@ export default {
           options: [],
           required: true
         },
+        // {
+        //   type: "upload",
+        //   prop: "carsImg_true",
+        //   label: "略缩图"
+        // },
         {
-          type: "upload",
+          type: "input",
           prop: "carsImg",
           label: "略缩图",
-          required: true
+          placeholder: "为测试方便，缩略图直接采用图片地址的形式"
         },
         {
           type: "input",

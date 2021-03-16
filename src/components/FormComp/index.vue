@@ -74,6 +74,7 @@
         v-for="item in formHandler"
         :key="item.key"
         :type="item.type"
+        :size="item.size || 'small'"
         @click="item.handler && item.handler()"
       >
         {{ item.label }}
