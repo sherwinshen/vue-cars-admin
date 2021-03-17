@@ -87,7 +87,7 @@ export default {
       timer: null,
       isLogin: true,
       form: {
-        email: "sw@qq.com",
+        email: "sw1@qq.com",
         password: "sw1234",
         passwordRepeat: "",
         code: ""
@@ -173,6 +173,7 @@ export default {
     // 切换注册
     toggleRegister() {
       this.isLogin = false;
+      this.resetFromData(); // 清除表单数据
     },
     // 验证码按钮属性更新
     updateCodeBtn(params) {

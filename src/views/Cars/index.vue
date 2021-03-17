@@ -29,7 +29,7 @@ export default {
       tableConfig: {
         // 表单配置
         tHead: [
-          { label: "车牌号", prop: "carsMode" },
+          { label: "车辆型号", prop: "carsMode" },
           { label: "车辆品牌", prop: "nameCh" },
           {
             label: "车辆LOGO",

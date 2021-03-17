@@ -795,3 +795,51 @@ async demo2(){ // 执行
 }
 ```
 
+### 48.2 computed、filters和watch
+
+```vue
+<template>
+<h1 class="price">{{priceToFixedByComputed}}</h1>
+<h1 class="price">{{priceToFixedByMethods()}}</h1>
+<h1 class="price">{{price | priceToFixedByFilters}}</h1>
+</template>
+
+<script>
+  export default {
+    name: "",
+    data() {
+      return {
+        price: 27.999999999
+      }
+    },
+    computed: {
+      priceToFixedByComputed() {
+        console.log('computed')
+        return this.price.toFixed(2)
+      }
+    },
+    methods: {
+      priceToFixedByMethods() {
+        console.log('methods')
+        return this.price.toFixed(2)
+      }
+    },
+    filters: {
+      priceToFixedByFilters(val) {
+        console.log('filters')
+        return val.toFixed(2)
+      }
+    },
+    watch: {
+      price(val) {
+        console.log('watch')
+      }
+    },
+  };
+</script>
+```
+
+- computed，一般用于计算，可直接在模板中使用有缓存机制，性能比methods更高。
+- methods, 一般用于函数方法，在模板中使用时需加()，没有缓存，使用一次就触发一次。
+- filters，一般用于格式化（时间，取整，取余等），使用时用 “|” 隔开。
+- watch，一般用于数据变化时执行异步或开销较大的操作，当观察的对象改变时触发，没有返回值。

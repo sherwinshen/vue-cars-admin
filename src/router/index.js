@@ -99,20 +99,20 @@ const routes = [
         component: () => import("../views/Cars")
       },
       {
-        path: "/carsAttr",
-        name: "CarsAttr",
-        meta: {
-          title: "车辆属性"
-        },
-        component: () => import("../views/Cars/attr.vue")
-      },
-      {
         path: "/carsAdd",
         name: "CarsAdd",
         meta: {
           title: "新增车辆"
         },
         component: () => import("../views/Cars/add.vue")
+      },
+      {
+        path: "/carsAttr",
+        name: "CarsAttr",
+        meta: {
+          title: "车辆属性"
+        },
+        component: () => import("../views/Cars/attr.vue")
       }
     ]
   },

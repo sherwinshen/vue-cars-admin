@@ -57,7 +57,13 @@
         </div>
       </template>
       <template v-slot:carsAttr>
-        车辆属性
+        <CarAttr
+          ref="carAttr"
+          :oil="formData.oil"
+          :initValue="formData.carsAttr"
+          :value.sync="formData.carsAttr"
+          :countKm.sync="formData.countKm"
+        />
       </template>
     </FormComp>
   </div>
@@ -65,12 +71,13 @@
 
 <script>
 import FormComp from "@/components/FormComp";
+import CarAttr from "@/components/common/CarAttr";
 import { GetBrand, GetParking } from "@/api/common";
 import { CarsAdd, CarsDetailed, CarsEdit } from "@/api/cars";
 
 export default {
   name: "CarsAdd",
-  components: { FormComp },
+  components: { FormComp, CarAttr },
   data() {
     return {
       id: this.$route.query.id,
@@ -94,6 +101,13 @@ export default {
           selectLabel: "parkingName",
           prop: "parkingId",
           options: [],
+          required: true
+        },
+        {
+          type: "radio",
+          label: "禁启用",
+          prop: "status",
+          options: this.$store.state.config.radio_disabled,
           required: true
         },
         // {
@@ -166,11 +180,9 @@ export default {
           requiredMsg: "请先选择能源类型"
         },
         {
-          type: "radio",
-          label: "禁启用",
-          prop: "status",
-          options: this.$store.state.config.radio_disabled,
-          required: true
+          type: "input",
+          label: "可行驶公里",
+          prop: "countKm"
         },
         {
           type: "slot",
@@ -207,13 +219,14 @@ export default {
         yearCheck: null,
         gear: null,
         energyType: null,
-        electric: 100,
-        oil: 100,
+        electric: 0,
+        oil: 0,
         carsAttr: "",
         content: "",
         maintainDate: "",
         status: null,
-        carsImg: ""
+        carsImg: "",
+        countKm: 0
       },
       isRestore: false, // 是否为恢复数据
       button_loading: false
@@ -282,6 +295,8 @@ export default {
     },
     // 提交数据
     submit() {
+      // 首先初始化carsAttr
+      this.$refs.carAttr.updateCarsAttr();
       this.$refs.carsAddForm.$refs.form.validate(valid => {
         if (valid) {
           this.id ? this.edit() : this.add();
@@ -324,6 +339,7 @@ export default {
     // 重置数据
     reset() {
       this.$refs.carsAddForm.reset();
+      this.$refs.carAttr.reset();
     }
   }
 };
