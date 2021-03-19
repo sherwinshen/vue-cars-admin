@@ -19,6 +19,17 @@
         :disabled="item.disabled"
       >
       </el-input>
+      <!--textarea渲染-->
+      <el-input
+        v-else-if="item.type === 'textarea'"
+        type="textarea"
+        :rows="item.rows || 5"
+        v-model.trim="formData[item.prop]"
+        :placeholder="item.placeholder"
+        :style="{ width: item.width }"
+        :disabled="item.disabled"
+      ></el-input>
+
       <!--inputNumber渲染-->
       <el-input-number
         v-else-if="item.type === 'inputNumber'"

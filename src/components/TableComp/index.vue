@@ -64,6 +64,35 @@
           :width="item.width"
         >
           <template slot-scope="scope">
+            <!--编辑-->
+            <template v-if="item.buttonGroup && item.buttonGroup.length > 0">
+              <template v-for="button in item.buttonGroup">
+                <!-- 事件 -->
+                <el-button
+                  v-if="button.event === 'button'"
+                  :type="button.type"
+                  :key="button.id"
+                  @click="button.handler && button.handler(scope.row)"
+                  size="small"
+                >
+                  {{ button.label }}
+                </el-button>
+                <!-- 路由跳转 -->
+                <router-link
+                  v-else-if="button.event === 'link'"
+                  :key="button.id"
+                  :to="{
+                    name: button.name,
+                    query: { [button.key]: scope.row[button.value || 'id'] }
+                  }"
+                  class="mr-10"
+                >
+                  <el-button :type="button.type" size="small">{{
+                    button.label
+                  }}</el-button>
+                </router-link>
+              </template>
+            </template>
             <!--编辑按钮-->
             <template v-if="item.default && item.default.editButton">
               <el-button
@@ -188,6 +217,8 @@ export default {
             // 判断页码是否存在
             if (data.data.total) {
               this.total = data.data.total;
+            } else {
+              this.total = data.data.data.length;
             }
           }
           this.table_loading = false;

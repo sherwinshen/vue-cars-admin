@@ -146,10 +146,10 @@ export default {
     // 重置
     reset() {
       this.$refs.form.resetFields();
-      if (this.$refs.cityArea[0]) {
+      if (this.$refs.cityArea && this.$refs.cityArea[0]) {
         this.$refs.cityArea[0].clear();
       }
-      if (this.$refs.keyword[0]) {
+      if (this.$refs.keyword && this.$refs.keyword[0]) {
         this.$refs.keyword[0].clear();
         this.keyword = {};
       }
