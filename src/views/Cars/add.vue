@@ -65,6 +65,25 @@
           :countKm.sync="formData.countKm"
         />
       </template>
+      <template v-slot:leaseList>
+        <el-row :gutter="20">
+          <el-col
+            :span="4"
+            v-for="item in leaseListData"
+            :key="item.carsLeaseTypeId"
+          >
+            <div>{{ item.carsLeaseTypeName }}</div>
+            <el-input-number
+              v-model="item.price"
+              controls-position="right"
+              :min="0"
+              :max="10000"
+              placeholder="请输入价格"
+              style="width: 100%;"
+            ></el-input-number>
+          </el-col>
+        </el-row>
+      </template>
     </FormComp>
   </div>
 </template>
@@ -73,7 +92,8 @@
 import FormComp from "@/components/FormComp";
 import CarAttr from "@/components/common/CarAttr";
 import { GetBrand, GetParking } from "@/api/common";
-import { CarsAdd, CarsDetailed, CarsEdit } from "@/api/cars";
+import { CarsInfoAdd, CarsInfoDetailed, CarsInfoEdit } from "@/api/cars";
+import { RentList } from "@/api/rent";
 
 export default {
   name: "CarsAdd",
@@ -82,6 +102,7 @@ export default {
     return {
       id: this.$route.query.id,
       energyType: this.$store.state.config.energyType,
+      leaseListData: [],
       formItem: [
         {
           type: "select",
@@ -191,6 +212,12 @@ export default {
           label: "车辆属性"
         },
         {
+          type: "slot",
+          slotName: "leaseList",
+          prop: "lease",
+          label: "租赁价格"
+        },
+        {
           type: "editor",
           prop: "content",
           label: "车辆描述"
@@ -235,6 +262,7 @@ export default {
   beforeMount() {
     this.getBrandList();
     this.getParkingList();
+    this.getLeaseList();
     this.getDetail();
   },
   methods: {
@@ -243,7 +271,7 @@ export default {
       if (!this.id) {
         return false;
       }
-      CarsDetailed({ id: this.id })
+      CarsInfoDetailed({ id: this.id })
         .then(response => {
           const data = response.data.data;
           if (!data) {
@@ -254,6 +282,7 @@ export default {
               this.formData[key] = data[key];
             }
           }
+          this.leaseListData = data.leasePrice;
           this.isRestore = true;
         })
         .catch(error => {
@@ -271,6 +300,19 @@ export default {
           if (carsBrand.length > 0) {
             carsBrand[0].options = data;
           }
+        }
+      });
+    },
+    // 获取租车列表
+    getLeaseList() {
+      // id 存在则不请求
+      if (this.id) {
+        return false;
+      }
+      RentList().then(response => {
+        const data = response.data.data.data;
+        if (data) {
+          this.leaseListData = data;
         }
       });
     },
@@ -309,7 +351,7 @@ export default {
     // 新增数据
     add() {
       this.button_loading = true;
-      CarsAdd(this.formData)
+      CarsInfoAdd({ ...this.formData, leasePrice: this.leaseListData })
         .then(response => {
           this.$message({
             message: response.data.message,
@@ -325,7 +367,11 @@ export default {
     },
     // 编辑数据
     edit() {
-      CarsEdit({ ...this.formData, id: this.id })
+      CarsInfoEdit({
+        ...this.formData,
+        id: this.id,
+        leasePrice: this.leaseListData
+      })
         .then(response => {
           this.$message({
             message: response.data.message,
@@ -340,6 +386,9 @@ export default {
     reset() {
       this.$refs.carsAddForm.reset();
       this.$refs.carAttr.reset();
+      this.leaseListData.forEach(item => {
+        item.price = 0;
+      });
     }
   }
 };
