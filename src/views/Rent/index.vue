@@ -38,7 +38,7 @@ export default {
       visible: false,
       tableConfig: {
         checkbox: false,
-        pagination: false,
+        paginationFlag: false,
         selectionFlag: false,
         tHead: [
           { label: "租车类型", prop: "carsLeaseTypeName" },

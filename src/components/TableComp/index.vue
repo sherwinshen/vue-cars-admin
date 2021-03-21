@@ -74,6 +74,7 @@
                   :key="button.id"
                   @click="button.handler && button.handler(scope.row)"
                   size="small"
+                  plain
                 >
                   {{ button.label }}
                 </el-button>
@@ -85,9 +86,9 @@
                     name: button.name,
                     query: { [button.key]: scope.row[button.value || 'id'] }
                   }"
-                  class="mr-10"
+                  class="margin-right-10"
                 >
-                  <el-button :type="button.type" size="small">{{
+                  <el-button :type="button.type" size="small" plain>{{
                     button.label
                   }}</el-button>
                 </router-link>
@@ -114,7 +115,7 @@
                 type="danger"
                 size="small"
                 plain
-                @click="deleteItem(scope.row.id)"
+                @click="deleteItem(scope.row[item.default.deleteId || 'id'])"
                 >删除
               </el-button>
             </template>

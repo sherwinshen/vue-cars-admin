@@ -27,3 +27,15 @@ export function energyType(value) {
   }
   return "";
 }
+
+/** 格式化请求数据的参数  */
+// 有时候请求获得的数据比较多，我们只取指定需要的部分即可
+export function formatRequestData(keyData, requestData) {
+  const data = {};
+  for (let key in keyData) {
+    if (Object.keys(requestData).includes(key)) {
+      data[key] = requestData[key];
+    }
+  }
+  return data;
+}
