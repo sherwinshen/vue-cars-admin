@@ -1,16 +1,43 @@
 <template>
   <div class="member-list-wrap">
-    <TableComp ref="memberTable" :tableConfig="tableConfig"></TableComp>
+    <TableComp ref="memberTable" :tableConfig="tableConfig">
+      <template v-slot:realName="slotProps">
+        <el-button
+          size="small"
+          plain
+          @click="showPhoto(slotProps.slotProps, 'realName')"
+          >查看认证</el-button
+        >
+      </template>
+      <template v-slot:checkCars="slotProps">
+        <el-button
+          size="small"
+          plain
+          @click="showPhoto(slotProps.slotProps, 'checkCars')"
+          >查看认证</el-button
+        >
+      </template>
+    </TableComp>
+    <DialogPhoto
+      :dialogVisible.sync="visible"
+      :type="type"
+      :data="dataPhoto"
+      :checkFlag="checkFlag"
+      @callback="callback"
+    />
   </div>
 </template>
 
 <script>
 import TableComp from "@/components/TableComp";
+import DialogPhoto from "@/components/dialog/DialogPhoto";
+import { Blacklist, Photo, UpdateRealName } from "@/api/member";
 
 export default {
   name: "MemberList",
   components: {
-    TableComp
+    TableComp,
+    DialogPhoto
   },
   data() {
     return {
@@ -22,52 +49,52 @@ export default {
         tHead: [
           {
             label: "用户名",
-            prop: "username",
-            width: 150
+            prop: "username"
           },
           {
             label: "真实姓名",
-            prop: "truename",
-            width: 150
+            prop: "truename"
           },
           {
             label: "租车订单",
-            prop: "order",
-            width: 150
+            prop: "order"
           },
           {
             label: "违章预存金",
-            prop: "illegalAmount",
-            width: 200
+            prop: "illegalAmount"
+          },
+          {
+            label: "押金",
+            prop: "gilding"
+          },
+          {
+            label: "余额",
+            prop: "amount"
           },
           {
             label: "实名认证",
             prop: "check_real_name",
-            type: "function",
-            callback: row => {
-              return row.check_real_name ? "已认证" : "-";
-            }
+            type: "slot",
+            slotName: "realName",
+            width: 120
           },
           {
             label: "驾驶证",
             prop: "check_cars",
-            type: "function",
-            callback: row => {
-              return row.check_cars ? "已认证" : "-";
-            }
+            type: "slot",
+            slotName: "checkCars",
+            width: 120
           },
           {
             label: "黑名单",
             prop: "blacklist",
-            type: "function",
-            callback: row => {
-              return row.blacklist ? "是" : "-";
-            }
+            type: "switch",
+            handler: (status, data) => this.updateBlacklist(status, data)
           },
           {
             label: "操作",
             type: "operation",
-            width: 300,
+            width: 250,
             buttonGroup: [
               {
                 label: "详情",
@@ -108,10 +135,66 @@ export default {
         formConfig: {
           resetButton: true
         }
-      }
+      },
+      visible: false,
+      type: "",
+      dataPhoto: {},
+      checkFlag: true,
+      curId: ""
     };
   },
-  methods: {}
+  methods: {
+    // 公共回调
+    callback(params) {
+      if (params.funcName) {
+        this[params.funcName](params.data);
+      }
+    },
+    // 黑名单更新
+    updateBlacklist(status, data) {
+      Blacklist({
+        status,
+        id: data.memberId
+      }).then(response => {
+        this.$message({
+          message: response.data.message,
+          type: "success"
+        });
+      });
+    },
+    // 显示证件
+    showPhoto(data, type) {
+      this.title = type === "checkCars" ? "驾驶证" : "实名认证";
+      const requestData = {
+        id: data.memberId,
+        type: type === "checkCars" ? "drive" : "identity"
+      };
+      Photo(requestData).then(response => {
+        const curData = response.data.data;
+        if (curData) {
+          this.checkFlag =
+            type === "checkCars" ? data.check_cars : data.check_real_name;
+          this.type = type === "checkCars" ? "drive" : "identity";
+          this.curId = data.memberId;
+          this.dataPhoto = curData;
+          this.visible = true;
+        }
+      });
+    },
+    updateCheck() {
+      const requestData = {
+        status: !this.checkFlag,
+        id: this.curId,
+        type: this.type
+      };
+      UpdateRealName(requestData).then(response => {
+        this.$message({
+          message: response.data.message,
+          type: "success"
+        });
+      });
+    }
+  }
 };
 </script>
 

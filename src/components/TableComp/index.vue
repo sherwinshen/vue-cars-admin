@@ -26,6 +26,7 @@
           :key="item.prop"
           :prop="item.prop"
           :label="item.label"
+          :width="item.width"
         >
           <template slot-scope="scope">
             <span
@@ -39,6 +40,7 @@
           :key="item.prop"
           :prop="item.prop"
           :label="item.label"
+          :width="item.width"
         >
           <template slot-scope="scope">
             <slot :name="item.slotName" :slotProps="scope.row"></slot>
@@ -123,6 +125,26 @@
             <template v-else>
               <slot :name="item.slotName" :slotProps="scope.row"></slot>
             </template>
+          </template>
+        </el-table-column>
+        <!-- switch渲染 -->
+        <el-table-column
+          v-else-if="item.type === 'switch'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width"
+        >
+          <template slot-scope="scope">
+            <el-switch
+              @change="item.handler && item.handler($event, scope.row)"
+              v-model="scope.row[item.prop]"
+              :active-value="item.on || true"
+              :inactive-value="item.off || false"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            >
+            </el-switch>
           </template>
         </el-table-column>
         <!--纯文本渲染-->

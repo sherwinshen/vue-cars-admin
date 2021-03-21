@@ -1,6 +1,6 @@
 <template>
   <div class="member-detail-wrap" style="width: 100%">
-   <p>略。</p>
+    <p>略。</p>
   </div>
 </template>
 

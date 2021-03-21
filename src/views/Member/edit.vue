@@ -1,10 +1,9 @@
 <template>
   <div class="member-edit-wrap">
-    <span class="back" @click="back">
+    <el-button class="back" @click="back" type="primary" size="small" round>
       <i class="el-icon-back"></i>
       返回
-    </span>
-    <el-divider class="margin-top-20 margin-bottom-20" />
+    </el-button>
     <FormComp
       ref="memberForm"
       :formData="formData"
@@ -79,27 +78,32 @@ export default {
           required: true
         },
         {
-          type: "upload",
+          // type: "upload",
+          type: "input",
           label: "身份证（正面）",
           prop: "cardPhotoFace"
         },
         {
-          type: "upload",
+          // type: "upload",
+          type: "input",
           label: "身份证（反面）",
           prop: "cardPhotoBack"
         },
         {
-          type: "upload",
+          // type: "upload",
+          type: "input",
           label: "身份证（免冠）",
           prop: "cardPhotoBareheaded"
         },
         {
-          type: "upload",
+          // type: "upload",
+          type: "input",
           label: "驾驶证（正面）",
           prop: "carsPhotoFace"
         },
         {
-          type: "upload",
+          // type: "upload",
+          type: "input",
           label: "驾驶证（反面）",
           prop: "carsPhotoBack"
         },
@@ -165,10 +169,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.member-edit-wrap {
+  position: relative;
+}
 .back {
-  display: inline-block;
-  font-size: 16px;
+  position: absolute;
+  font-size: 12px;
   cursor: pointer;
-  color: #409eff;
+  right: 0;
+  z-index: 1000;
 }
 </style>
