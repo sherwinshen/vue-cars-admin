@@ -31,7 +31,7 @@
 <script>
 import TableComp from "@/components/TableComp";
 import DialogPhoto from "@/components/dialog/DialogPhoto";
-import { Blacklist, Photo, UpdateRealName } from "@/api/member";
+import { Blacklist, Photo, UpdateRealName, AmountClear } from "@/api/member";
 
 export default {
   name: "MemberList",
@@ -49,7 +49,8 @@ export default {
         tHead: [
           {
             label: "用户名",
-            prop: "username"
+            prop: "username",
+            width: 110
           },
           {
             label: "真实姓名",
@@ -76,14 +77,14 @@ export default {
             prop: "check_real_name",
             type: "slot",
             slotName: "realName",
-            width: 120
+            width: 115
           },
           {
             label: "驾驶证",
             prop: "check_cars",
             type: "slot",
             slotName: "checkCars",
-            width: 120
+            width: 115
           },
           {
             label: "黑名单",
@@ -94,7 +95,7 @@ export default {
           {
             label: "操作",
             type: "operation",
-            width: 250,
+            width: 300,
             buttonGroup: [
               {
                 label: "详情",
@@ -111,6 +112,12 @@ export default {
                 name: "MemberEdit",
                 key: "id",
                 value: "memberId"
+              },
+              {
+                event: "button",
+                label: "清空金额",
+                type: "",
+                handler: data => this.amountClear(data)
               }
             ],
             default: {
@@ -181,6 +188,17 @@ export default {
         }
       });
     },
+    // 清空金额
+    amountClear(data) {
+      AmountClear({ member_id: data.memberId }).then(response => {
+        this.$refs.memberTable.requestData();
+        this.$message({
+          type: "success",
+          message: response.data.message
+        });
+      });
+    },
+    // 更新认证
     updateCheck() {
       const requestData = {
         status: !this.checkFlag,
