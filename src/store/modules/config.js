@@ -54,7 +54,9 @@ const state = {
     { label: "车牌号", value: "carsNumber" },
     { label: "用户名", value: "username" },
     { label: "真实姓名", value: "truename" },
-    { label: "身份证", value: "card_id" }
+    { label: "身份证", value: "card_id" },
+    { label: "订单号", value: "order_no" },
+    { label: "订单状态", value: "order_status" }
   ],
   // 订单状态
   order_status: {

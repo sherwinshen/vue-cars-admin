@@ -854,3 +854,12 @@ async demo2(){ // 执行
 
 ![](./noteImg/支付逻辑.jpg)
 
+## 第55课时
+
+### 55.1 租车下单逻辑
+
+<img src="./noteImg/租车下单.png" style="zoom:50%;" />
+
+## 第56课时
+
+略。

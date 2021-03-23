@@ -17,7 +17,7 @@
 <script>
 import TableComp from "@/components/TableComp";
 import { yearCheckType, energyType } from "@/utils/format";
-import { CarsStatus } from "@/api/cars";
+import { CarsStatus, CarsLock } from "@/api/cars";
 
 export default {
   name: "CarsList",
@@ -54,6 +54,16 @@ export default {
             type: "slot",
             slotName: "status"
           },
+          {
+            label: "车辆状态",
+            prop: "cars_status",
+            type: "function",
+            callback: row => {
+              const carsStatus = this.$store.state.config.cars_status;
+              const status = carsStatus[row.carsStatus];
+              return status ? status.zh : "-";
+            }
+          },
           { label: "停车场", prop: "parkingName" },
           {
             label: "区域",
@@ -64,12 +74,20 @@ export default {
           {
             label: "操作",
             type: "operation",
-            width: "150px",
+            width: 150,
             default: {
               deleteButton: true,
               editButton: true,
               editLink: "CarsAdd"
             }
+            // buttonGroup: [
+            //   {
+            //     label: "车辆释放",
+            //     type: "",
+            //     event: "button",
+            //     handler: data => this.lock(data)
+            //   }
+            // ]
           }
         ],
         // 表单请求地址
@@ -135,6 +153,15 @@ export default {
           this.switchDisabled = "";
           console.error("error", error);
         });
+    },
+    // 车辆释放
+    lock(data) {
+      CarsLock({ id: data.id }).then(response => {
+        this.$message({
+          type: "success",
+          message: response.data.message
+        });
+      });
     }
   }
 };
