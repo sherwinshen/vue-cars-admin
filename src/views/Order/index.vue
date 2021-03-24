@@ -27,6 +27,7 @@ export default {
             label: "状态",
             prop: "order_status",
             type: "function",
+            width: 90,
             callback: row => {
               const orderStatus = this.$store.state.config.order_status;
               const status = orderStatus[row.order_status];
@@ -37,7 +38,7 @@ export default {
             label: "日期",
             prop: "create_date",
             type: "function",
-            width: 110,
+            width: 170,
             callback: row => {
               // 空数据时
               if (!row.create_date) {
@@ -45,12 +46,13 @@ export default {
               }
               // 分割日期
               const dateSplit = row.create_date.split(" ");
-              return `${dateSplit[0]} </br> ${dateSplit[1]}`;
+              return `${dateSplit[0]} ${dateSplit[1]}`;
             }
           },
           {
             label: "金额",
-            prop: "amount"
+            prop: "amount",
+            width: 80
           },
           {
             label: "模拟",
@@ -97,13 +99,17 @@ export default {
                 label: "编辑",
                 type: "primary",
                 event: "button",
-                handler: () => {}
+                handler: () => {
+                  this.showMessage("暂不支持！", "warning");
+                }
               },
               {
                 label: "删除",
                 type: "danger",
                 event: "button",
-                handler: () => {}
+                handler: () => {
+                  this.showMessage("暂不支持！", "warning");
+                }
               }
             ]
           }
@@ -175,9 +181,9 @@ export default {
         this.loadData();
       });
     },
-    showMessage(message) {
+    showMessage(message, type = "success") {
       this.$message({
-        type: "success",
+        type,
         message: message
       });
     },
